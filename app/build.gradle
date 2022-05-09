@@ -9,11 +9,13 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'java'
 }
 
 repositories {
     // Use Maven Central for resolving dependencies.
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -22,11 +24,32 @@ dependencies {
 
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:30.1.1-jre'
+
+    // AWS
+    implementation platform('software.amazon.awssdk:bom:2.13.13')
+    implementation 'software.amazon.awssdk:sqs'
+    implementation 'software.amazon.awssdk:regions'
+    implementation 'software.amazon.awssdk:auth'
+
+    // Neo4j
+    implementation'org.neo4j.driver:neo4j-java-driver:4.1.1'
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    // MOEA
+    implementation 'org.moeaframework:moeaframework:2.12'
+
+    // CSV
+    implementation 'com.opencsv:opencsv:5.2'
+
+    // MATRIX OPERATIONS
+    implementation group: 'org.ejml', name: 'ejml-all', version: '0.40'
 }
 
 application {
     // Define the main class for the application.
-    mainClass = 'decision.graph.App'
+    mainClass = 'app.App'
 }
 
 tasks.named('test') {

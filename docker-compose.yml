@@ -1,0 +1,37 @@
+version: '3.7'
+services:
+  neo4j:
+    image: neo4j:latest
+    container_name: add_neo4j
+    ports:
+      - "7687:7687"
+      - "7474:7474"
+    volumes:
+      - ./neo4j/data:/data
+      - /home/gapaza/repos/seakers/daphne/databases/neo4j_add/plugins:/plugins
+    environment:
+      - NEO4J_AUTH=neo4j/test
+      - NEO4J_dbms_allow__upgrade=true
+      - NEO4J_dbms_allow__format__migration=true
+      - NEO4J_dbms_security_procedures_unrestricted=gds.*
+      - NEO4J_dbms_security_procedures_whitelist=gds.*
+      - NEO4JLABS_PLUGINS='["graph-data-science"]'
+  add_engine:
+    build: .
+    image: add_server:alpha
+    volumes:
+      - type: bind
+        source: .
+        target: /decisions
+    environment:
+      - AWS_ACCESS_KEY_ID=AKIAJVM34C5MCCWRJCCQ
+      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_STACK_ENDPOINT=http://mock-sqs:9324
+      - NEO4J_URI=neo4j://neo4j:7687
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=test
+      - PROBLEM=ClimateCentric
+      - EVAL_QUEUE=add_queue
+      - VASSAR_QUEUE=http://localhost:9324/000000000000/vassar_queue
+    container_name: add_engine
+    tty: true
