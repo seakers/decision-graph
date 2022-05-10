@@ -100,7 +100,8 @@ public class Graph {
                 JsonObject input_obj = inputs.getAsJsonObject();
 
                 // --> Add desired property to JsonObject
-                input_obj.addProperty("uid", uid[0]);
+                // input_obj.addProperty("uid", uid[0]);
+                input_obj.addProperty("uid", Integer.toString(uid[0]));
                 uid[0]++;
 
                 for(String key: input_obj.keySet()){

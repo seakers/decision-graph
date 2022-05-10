@@ -119,7 +119,7 @@ public class StandardForm extends Decision {
 
             JsonArray ref_uids = new JsonArray();
             for(JsonElement element: dependency_refs.getAsJsonArray(parent_uid)){
-                ref_uids.add(element.getAsJsonObject().get("uid").getAsInt());
+                ref_uids.add(element.getAsJsonObject().get("uid").getAsString());
             }
 
 
@@ -257,14 +257,14 @@ public class StandardForm extends Decision {
 
         for(String child_uid: child_decision.keySet()){
             JsonObject         child_decision_component = child_decision.getAsJsonObject(child_uid);
-            ArrayList<Integer> child_decision_uids      = this.gson.fromJson(child_decision_component.getAsJsonArray("ref_uids"), new TypeToken<ArrayList<Integer>>(){}.getType());
+            ArrayList<String>  child_decision_uids       = this.gson.fromJson(child_decision_component.getAsJsonArray("ref_uids"), new TypeToken<ArrayList<String>>(){}.getType());
             ArrayList<Integer> parent_info              = BitString.getEmptyInfo(child_decision_uids.size());
             if(parent_decision.has(child_uid)){
                 JsonObject         parent_decision_component  = parent_decision.getAsJsonObject(child_uid);
-                ArrayList<Integer> parent_decision_uids       = this.gson.fromJson(parent_decision_component.getAsJsonArray("ref_uids"), new TypeToken<ArrayList<Integer>>(){}.getType());
+                ArrayList<String> parent_decision_uids       = this.gson.fromJson(parent_decision_component.getAsJsonArray("ref_uids"), new TypeToken<ArrayList<String>>(){}.getType());
                 ArrayList<Integer> parent_decision_chromosome = this.gson.fromJson(parent_decision_component.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
                 for(int x = 0; x < parent_info.size(); x++){
-                    int child_decision_uid = child_decision_uids.get(x);
+                    String child_decision_uid = child_decision_uids.get(x);
                     if(parent_decision_uids.contains(child_decision_uid)){
                         int parent_uid_idx = parent_decision_uids.indexOf(child_decision_uid);
                         parent_info.set(x, parent_decision_chromosome.get(parent_uid_idx));

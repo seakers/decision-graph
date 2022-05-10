@@ -137,7 +137,7 @@ public class Assigning extends Decision {
         if(direction.equalsIgnoreCase("FROM")){
             for(JsonElement dependency_element: dependency_elements){
                 dependencies.get("from").getAsJsonArray().add(dependency_element.getAsJsonObject());
-                dependencies.get("from_uid").getAsJsonArray().add(dependency_element.getAsJsonObject().get("uid").getAsInt());
+                dependencies.get("from_uid").getAsJsonArray().add(dependency_element.getAsJsonObject().get("uid").getAsString());
                 dependencies.get("from_keys").getAsJsonArray().add(operates_on);
                 dependencies.get("from_src").getAsJsonArray().add(source);
             }
@@ -145,7 +145,7 @@ public class Assigning extends Decision {
         else if(direction.equalsIgnoreCase("TO")){
             for(JsonElement dependency_element: dependency_elements){
                 dependencies.get("to").getAsJsonArray().add(dependency_element.getAsJsonObject());
-                dependencies.get("to_uid").getAsJsonArray().add(dependency_element.getAsJsonObject().get("uid").getAsInt());
+                dependencies.get("to_uid").getAsJsonArray().add(dependency_element.getAsJsonObject().get("uid").getAsString());
                 dependencies.get("to_keys").getAsJsonArray().add(operates_on);
                 dependencies.get("to_src").getAsJsonArray().add(source);
             }
@@ -407,11 +407,13 @@ public class Assigning extends Decision {
 
         JsonArray assign_to          = decision.getAsJsonArray("to");
         JsonArray assign_to_src      = decision.getAsJsonArray("to_src");
+        JsonArray assign_to_uid      = decision.getAsJsonArray("to_uid");
         JsonArray assign_to_keys     = decision.getAsJsonArray("to_keys");
 
 
         JsonArray assign_from        = decision.getAsJsonArray("from");
         JsonArray assign_from_src    = decision.getAsJsonArray("from_src");
+        JsonArray assign_from_uid    = decision.getAsJsonArray("from_uid");
         JsonArray assign_from_keys   = decision.getAsJsonArray("from_keys");
 
 
@@ -446,6 +448,7 @@ public class Assigning extends Decision {
         for(int x = 0; x < assign_to.size(); x++){
 
             JsonObject assign_to_obj = assign_to.get(x).getAsJsonObject();
+            String     to_uid        = assign_to_uid.get(x).toString().replace("\"", "");
             String     to_source     = assign_to_src.get(x).toString().replace("\"", "");
             String     to_key        = assign_to_keys.get(x).toString().replace("\"", "");
             boolean    to_used       = assign_to_used.get(x);
@@ -460,6 +463,7 @@ public class Assigning extends Decision {
             for(int y = 0; y < assign_from.size(); y++){
 
                 JsonObject assign_from_obj = assign_from.get(y).getAsJsonObject();
+                String     from_uid        = assign_from_uid.get(y).toString().replace("\"", "");
                 String     from_source     = assign_from_src.get(y).toString().replace("\"", "");
                 String     from_key        = assign_from_keys.get(y).toString().replace("\"", "");
 
@@ -468,10 +472,19 @@ public class Assigning extends Decision {
 
                 Integer bit = chromosome.get(counter);
                 if(bit == 1){
+
+                    // --> Create appropriate key in assign_to object
                     if(!assign_to_obj.has(from_key)){
                         assign_to_obj.add(from_key, new JsonArray());
                     }
-                    assign_to_obj.get(from_key).getAsJsonArray().add(assign_from_obj.deepCopy());
+
+                    // --> Copy assign_from object and assign new uid
+                    String new_uid = to_uid + "." + from_uid;
+                    JsonObject assign_from_obj_new = assign_from_obj.deepCopy();
+                    // assign_from_obj_new.addProperty("uid", new_uid);
+
+                    // --> Add copied assign_from object to assign_to
+                    assign_to_obj.get(from_key).getAsJsonArray().add(assign_from_obj_new);
                 }
                 counter++;
             }

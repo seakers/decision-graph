@@ -26,8 +26,8 @@ public class Files {
     public static String eoss_problem     = "/decisions/formulations/EOSS/problems/base.json";
 
 
-    public static String curr_formulation = Files.tdrs_formulation;
-    public static String curr_problem     = Files.tdrs_problem;
+    public static String curr_formulation = Files.gnc_formulation;
+    public static String curr_problem     = Files.gnc_problem;
 
 
 
