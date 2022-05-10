@@ -85,11 +85,11 @@ public class Assigning extends Decision {
 
         // --> 2. Add decision dependencies for each parent node edge
         for(JsonElement element: parent_relationships){
-            this.mergeParentRelationship(dependencies, element.getAsJsonObject(), is_root);
+            this.mergeParentRelationship(dependencies, element.getAsJsonObject(), is_root, parent);
         }
     }
 
-    public void mergeParentRelationship(JsonObject dependencies, JsonObject relationship, boolean is_root){
+    public void mergeParentRelationship(JsonObject dependencies, JsonObject relationship, boolean is_root, Decision parent){
 
         // --> Relationship properties
         String operates_on = relationship.get("operates_on").getAsString();
@@ -101,7 +101,7 @@ public class Assigning extends Decision {
             - Case 1: If the parent node is a root node, pull from the graph input object
             - Case 2: If the parent node is a decision node, pull from the design builder object
          */
-        JsonObject data_source;
+        JsonElement data_source;
         String source;
         if(is_root){
             source = "root";
@@ -110,12 +110,13 @@ public class Assigning extends Decision {
         else{
             source = "decision";
             data_source = DesignBuilder.object;
+            // data_source = parent.getLastDecisionRefs();
         }
 
         // --> Get dependency references
         // --> TODO: Change such that assigning decisions remove the 'from' JsonArrays that are accessed with operates_on
         JsonObject dependency_refs = new JsonObject();
-        this.recursiveJsonSearchAssigning(data_source, operates_on, dependency_refs, is_root, direction.equalsIgnoreCase("FROM"));
+        DesignBuilder.recursiveJsonSearchAssigning(data_source, operates_on, dependency_refs, is_root, direction.equalsIgnoreCase("FROM"));
 
         // --> Copy dependency elements from references
         JsonArray dependency_elements = new JsonArray();
@@ -191,12 +192,14 @@ public class Assigning extends Decision {
         dependencies.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray());
 
         // --> 3. Build decision
-        this.buildDecision(dependencies);
+        JsonObject decision = dependencies;
+        this.buildDecision(decision);
 
-        this.writeRandomDebugFile(dependencies, "decision.json");
+        this.writeRandomDebugFile(decision, "decision.json");
 
         // --> 4. Index decision into store
-        this.indexDecision(dependencies);
+        this.indexDecision(decision);
+        // this.indexDecision(decision, decision.get("to"));
     }
 
 
@@ -227,7 +230,7 @@ public class Assigning extends Decision {
         JsonObject mama_decision = this.decisions.get(mama).getAsJsonObject();
 
         // --> Child Dependencies
-        JsonObject child_decision = dependencies.deepCopy();
+        JsonObject child_decision = dependencies;
 
 
         this.writeCrossoverDebugFile(papa_decision, "papa_decision.json");
@@ -253,19 +256,24 @@ public class Assigning extends Decision {
                 randomly select any bits that don't correspond to parent info
          */
         this.crossoverUsableInfo(child_decision);
-        this.writeCrossoverDebugFile(child_decision, "child_dependencies.json");
 
 
         /*
-            - Build crossover decision
+            - Mutate chromosome probability is found true
          */
+        this.mutateChromosome(child_decision, mutation_probability);
 
+        /*
+            - Save decision info and build
+         */
+        this.writeCrossoverDebugFile(child_decision, "child_dependencies.json");
         this.buildDecision(child_decision);
 
         /*
             - Finally, index the decision
          */
         this.indexDecision(child_decision);
+        // this.indexDecision(child_decision, child_decision.get("to"));
     }
 
     public void extractFeasibleParentInfo(JsonObject parent_decision, JsonObject child_decision, String info_key){
@@ -353,6 +361,37 @@ public class Assigning extends Decision {
 
 
 
+//     __  __         _          _             _____  _
+//    |  \/  |       | |        | |           / ____|| |
+//    | \  / | _   _ | |_  __ _ | |_  ___    | |     | |__   _ __  ___   _ __ ___    ___   ___   ___   _ __ ___    ___
+//    | |\/| || | | || __|/ _` || __|/ _ \   | |     | '_ \ | '__|/ _ \ | '_ ` _ \  / _ \ / __| / _ \ | '_ ` _ \  / _ \
+//    | |  | || |_| || |_| (_| || |_|  __/   | |____ | | | || |  | (_) || | | | | || (_) |\__ \| (_) || | | | | ||  __/
+//    |_|  |_| \__,_| \__|\__,_| \__|\___|    \_____||_| |_||_|   \___/ |_| |_| |_| \___/ |___/ \___/ |_| |_| |_| \___|
+
+    @Override
+    public void mutateChromosome(JsonObject decision, double probability){
+        if(Decision.getProbabilityResult(probability)){
+            ArrayList<Integer> chromosome = this.gson.fromJson(decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+            decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+
+            // --> 1. Get a random bit index to flip
+            int rand_idx = this.rand.nextInt(chromosome.size());
+            if(chromosome.get(rand_idx) == 0){
+                chromosome.set(rand_idx, 1);
+            }
+            else if(chromosome.get(rand_idx) == 1){
+                chromosome.set(rand_idx, 0);
+            }
+            else{
+                System.out.println("--> ERROR: chromosome element to mutate not in proper form (assigning)");
+                System.exit(0);
+            }
+
+            decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+        }
+    }
+
+
 //     ____          _  _      _   _____               _       _
 //    |  _ \        (_)| |    | | |  __ \             (_)     (_)
 //    | |_) | _   _  _ | |  __| | | |  | |  ___   ___  _  ___  _   ___   _ __
@@ -398,6 +437,9 @@ public class Assigning extends Decision {
 
             - Case 2: assign_to element is taken from 'design_builder'
             -  Do nothing... because this assign_to element is a reference in 'design_builder', the previous step handles everything
+
+            - (IMPORTANT) each assign_to element will be given a new UID that is a string concatenation of the parent's UID and its UID.
+                This ensures that nested decision inside of assign_to elements will be uniquely identifiable
          */
 
         int counter = 0;
@@ -420,6 +462,9 @@ public class Assigning extends Decision {
                 JsonObject assign_from_obj = assign_from.get(y).getAsJsonObject();
                 String     from_source     = assign_from_src.get(y).toString().replace("\"", "");
                 String     from_key        = assign_from_keys.get(y).toString().replace("\"", "");
+
+
+
 
                 Integer bit = chromosome.get(counter);
                 if(bit == 1){

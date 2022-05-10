@@ -281,7 +281,7 @@ public class DatabaseClient {
         String node_str   = " MATCH (names:" + this.formulation + ") ";
         String where_str  = " WHERE names.name = \"" + node_name + "\"  ";
         Result query = tx.run(
-                node_str + where_str + " RETURN names.name, names.type, names.writes",
+                node_str + where_str + " RETURN names.name, names.type, names.options",
                 Values.parameters()
         );
         ArrayList<Record> items = new ArrayList<>();
@@ -501,8 +501,8 @@ public class DatabaseClient {
 
     // --> TODO: Make this a generic function that creates the graph based on a graph.json file and the problem from problem.json
     public void indexFormulation(){
-        String graph_file   = Files.tdrs_formulation;
-        String problem_file = Files.tdrs_problem;
+        String graph_file   = Files.curr_formulation;
+        String problem_file = Files.curr_problem;
 
 
 
@@ -536,15 +536,23 @@ public class DatabaseClient {
 
     private void indexNodes(Session session1, JsonObject graph_object, String root_problems) throws Exception{
 
-        // --> 1. Create root decision
+        // --> 1. Create root node
         session1.writeTransaction( tx -> addGenericRoot(tx, root_problems));
 
+        // --> 2. Create decision nodes
         JsonArray decisions = graph_object.getAsJsonArray("decisions");
         for(JsonElement element: decisions){
             JsonObject decision = element.getAsJsonObject();
             String dname = decision.get("name").getAsString().replace("\"", "");
             String dtype = decision.get("type").getAsString().replace("\"", "");
-            session1.writeTransaction( tx -> addGenericDecision(tx, dtype, dname, "empty"));
+
+            String options = "null";
+            if(decision.has("options")){
+                options = decision.get("options").getAsString().replace("\"", "");
+            }
+            String doptions = options;
+
+            session1.writeTransaction( tx -> addGenericDecision(tx, dtype, dname, doptions));
         }
     }
 
@@ -583,65 +591,6 @@ public class DatabaseClient {
 
 
 
-
-
-
-    /*
-        TDRS Formulation
-     */
-    public void indexTDRS(){
-
-        try (Session session1 = this.driver.session()){
-
-            // --> 1. Create Neo4j problem JsonObject
-            JsonObject problem_obj = new JsonObject();
-            problem_obj.add("inputs", this.gson.fromJson(new FileReader(Files.tdrs_problem), JsonObject.class));
-            problem_obj.add("designs", new JsonArray());
-
-            // --> 2. Add specific problem to object containing problems
-            JsonObject formulation_problems = new JsonObject();
-            formulation_problems.add(this.problem, problem_obj);
-            String root_problems = this.gson.toJson(formulation_problems);
-
-            // 1. Create nodes
-            session1.writeTransaction( tx -> addGenericRoot(tx, root_problems));
-            session1.writeTransaction( tx -> addGenericDecision(tx, "Assigning", "Antenna Assignment", "constellations"));
-            session1.writeTransaction( tx -> addGenericDecision(tx, "StandardForm", "Contract Modalities", "contract-modalities"));
-
-            // 2. Create dependencies
-            session1.writeTransaction(
-                    tx -> addGenericDependency(tx,
-                            "Root",
-                            "Antenna Assignment",
-                            "DEPENDENCY",
-                            "TO",
-                            "constellations"
-                    )
-            );
-            session1.writeTransaction(
-                    tx -> addGenericDependency(tx,
-                            "Root",
-                            "Antenna Assignment",
-                            "DEPENDENCY",
-                            "FROM",
-                            "antennas"
-                    )
-            );
-            session1.writeTransaction(
-                    tx -> addGenericDependency(tx,
-                            "Antenna Assignment",
-                            "Contract Modalities",
-                            "DEPENDENCY",
-                            "contract-modalities"
-                    )
-            );
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-    }
-
-
 //                  _      _   _   _             _
 //        /\       | |    | | | \ | |           | |
 //       /  \    __| |  __| | |  \| |  ___    __| |  ___  ___
@@ -655,13 +604,13 @@ public class DatabaseClient {
         return tx.run(query, Values.parameters("problems_str", problems_str));
     }
 
-    private Result addGenericDecision(final Transaction tx, final String decision_type, final String node_name, final String writes){
+    private Result addGenericDecision(final Transaction tx, final String decision_type, final String node_name, final String options){
         JsonObject problems_info = new JsonObject();
         problems_info.add(this.problem, new JsonArray());
         String problems_str    = this.gson.toJson(problems_info);
 
-        String query = "CREATE (n:" + this.formulation + ":Decision {name: $node_name, type: $decision_type, problems: $problems_str, writes: $writes})";
-        return tx.run(query, Values.parameters("node_name", node_name, "decision_type", decision_type,  "problems_str", problems_str, "writes", writes));
+        String query = "CREATE (n:" + this.formulation + ":Decision {name: $node_name, type: $decision_type, problems: $problems_str, options: $options})";
+        return tx.run(query, Values.parameters("node_name", node_name, "decision_type", decision_type,  "problems_str", problems_str, "options", options));
     }
 
 

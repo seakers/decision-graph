@@ -11,7 +11,26 @@ public class Files {
 
 
     public static String tdrs_formulation = "/decisions/formulations/TDRS/graph.json";
+    public static String tdrs_formulation1 = "/decisions/formulations/TDRS/graph_1.json";
     public static String tdrs_problem     = "/decisions/formulations/TDRS/problems/base.json";
+
+
+    public static String gnc_formulation = "/decisions/formulations/GNC/graph.json";
+    public static String gnc_formulation1 = "/decisions/formulations/GNC/graph_1.json";
+    public static String gnc_formulation2 = "/decisions/formulations/GNC/graph_2.json";
+    public static String gnc_formulation3 = "/decisions/formulations/GNC/graph_3.json";
+    public static String gnc_problem     = "/decisions/formulations/GNC/problems/base.json";
+
+
+    public static String eoss_formulation = "/decisions/formulations/EOSS/graph.json";
+    public static String eoss_problem     = "/decisions/formulations/EOSS/problems/base.json";
+
+
+    public static String curr_formulation = Files.tdrs_formulation;
+    public static String curr_problem     = Files.tdrs_problem;
+
+
+
 
 
     public static void writeDebugFile(String full_file_path, JsonArray elements){

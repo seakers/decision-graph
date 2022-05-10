@@ -69,11 +69,11 @@ public class StandardForm extends Decision {
 
         // --> 2. Add decision dependencies for each parent node edge
         for(JsonElement element: parent_relationships){
-            this.mergeParentRelationship(dependencies, element.getAsJsonObject(), is_root);
+            this.mergeParentRelationship(dependencies, element.getAsJsonObject(), is_root, parent);
         }
     }
 
-    public void mergeParentRelationship(JsonObject dependencies, JsonObject relationship, boolean is_root){
+    public void mergeParentRelationship(JsonObject dependencies, JsonObject relationship, boolean is_root, Decision parent){
 
         // --> Relationship properties
         String operates_on = relationship.get("operates_on").getAsString();
@@ -84,7 +84,7 @@ public class StandardForm extends Decision {
             - Case 1: If the parent node is a root node, pull from the graph input object
             - Case 2: If the parent node is a decision node, pull from the design builder object
          */
-        JsonObject data_source;
+        JsonElement data_source;
         String source;
         if(is_root){
             source = "root";
@@ -93,12 +93,21 @@ public class StandardForm extends Decision {
         else{
             source = "decision";
             data_source = DesignBuilder.object;
+            // data_source = parent.getLastDecisionRefs();
         }
 
 
-        // --> Get dependency references
+
+        // --> VERSION 1: Get dependency references
         JsonObject dependency_refs = new JsonObject();
-        this.recursiveJsonSearch(data_source, operates_on, dependency_refs);
+        DesignBuilder.recursiveJsonSearch(data_source, operates_on, dependency_refs);
+
+        // --> VERSION 2: Get dependency references
+//        JsonObject dependency_refs = new JsonObject();
+//        JsonArray decision_refs = new JsonArray();
+//        this.recursiveJsonShallowSearch(data_source, operates_on, dependency_refs, decision_refs);
+
+
 
         // --> Copy dependency references to decision dependencies
         for(String parent_uid: dependency_refs.keySet()){
@@ -137,7 +146,7 @@ public class StandardForm extends Decision {
 //    | | \ \| (_| || | | || (_| || (_) || | | | | | | |__| ||  __/\__ \| || (_| || | | |
 //    |_|  \_\\__,_||_| |_| \__,_| \___/ |_| |_| |_| |_____/  \___||___/|_| \__, ||_| |_|
 //                                                                           __/ |
-//
+//                                                                          |___/
 
     @Override
     public void generateRandomDesign() throws Exception{
@@ -149,6 +158,9 @@ public class StandardForm extends Decision {
 
     @Override
     public void generateRandomDesign(JsonObject dependencies) throws Exception{
+
+
+
 
         // --> 1. Each uid key in `dependencies` points to a JsonArray to SF select upon
         // - Generate random design for each
@@ -195,7 +207,7 @@ public class StandardForm extends Decision {
         JsonObject mama_decision = this.decisions.get(mama).getAsJsonObject();
 
         // --> Child Dependencies
-        JsonObject child_decision = dependencies.deepCopy();
+        JsonObject child_decision = dependencies;
 
         this.writeCrossoverDebugFile(papa_decision, "papa_decision.json");
         this.writeCrossoverDebugFile(mama_decision, "mama_decision.json");
@@ -220,10 +232,16 @@ public class StandardForm extends Decision {
 
 
         /*
+            - Mutate chromosome probability is found true
+         */
+        this.mutateChromosome(child_decision, mutation_probability);
+
+        /*
             - Build crossover decision
          */
-        this.buildDecision(child_decision);
         this.writeCrossoverDebugFile(child_decision, "child_dependencies.json");
+        this.buildDecision(child_decision);
+
 
         /*
             - Finally, index the decision
@@ -294,6 +312,39 @@ public class StandardForm extends Decision {
     }
 
 
+//     __  __         _          _             _____  _
+//    |  \/  |       | |        | |           / ____|| |
+//    | \  / | _   _ | |_  __ _ | |_  ___    | |     | |__   _ __  ___   _ __ ___    ___   ___   ___   _ __ ___    ___
+//    | |\/| || | | || __|/ _` || __|/ _ \   | |     | '_ \ | '__|/ _ \ | '_ ` _ \  / _ \ / __| / _ \ | '_ ` _ \  / _ \
+//    | |  | || |_| || |_| (_| || |_|  __/   | |____ | | | || |  | (_) || | | | | || (_) |\__ \| (_) || | | | | ||  __/
+//    |_|  |_| \__,_| \__|\__,_| \__|\___|    \_____||_| |_||_|   \___/ |_| |_| |_| \___/ |___/ \___/ |_| |_| |_| \___|
+
+    @Override
+    public void mutateChromosome(JsonObject decision, double probability){
+        if(Decision.getProbabilityResult(probability)){
+
+
+//            ArrayList<Integer> chromosome = this.gson.fromJson(decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+//            decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+//
+//            // --> 1. Get a random bit index to flip
+//            int rand_idx = this.rand.nextInt(chromosome.size());
+//            if(chromosome.get(rand_idx) == 0){
+//                chromosome.set(rand_idx, 1);
+//            }
+//            else if(chromosome.get(rand_idx) == 1){
+//                chromosome.set(rand_idx, 0);
+//            }
+//            else{
+//                System.out.println("--> ERROR: chromosome element to mutate not in proper form (assigning)");
+//                System.exit(0);
+//            }
+//
+//            decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+        }
+    }
+
+
 
 
 //     ____          _  _      _   _____               _       _
@@ -310,7 +361,6 @@ public class StandardForm extends Decision {
         /*
             - Steps to process each decision component reference
             - 1. If the reference comes from root, copy a new design base key using operates_on as the key
-            - 2. Apply the chromosome decision to the array (delete all inactive elements)
          */
 
         for(String uid: decision.keySet()){
@@ -334,8 +384,8 @@ public class StandardForm extends Decision {
             for(int x = chromosome.size()-1; x >= 0; x--){
                 if(chromosome.get(x).equals(0)){
                     JsonObject to_remove = array_ref.get(x).getAsJsonObject();
-                    DesignBuilder.findAndRemoveObject(Integer.parseInt(uid), to_remove, DesignBuilder.object);
-                    // array_ref.remove(x);
+                    // DesignBuilder.findAndRemoveObject(Integer.parseInt(uid), to_remove, DesignBuilder.object);
+                    array_ref.remove(x);
                 }
             }
         }

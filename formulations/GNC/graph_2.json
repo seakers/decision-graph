@@ -26,14 +26,6 @@
     {
       "name": "ActuatorTypeSelection",
       "type": "StandardForm"
-    },
-    {
-      "name": "SensorToComputer",
-      "type": "Assigning"
-    },
-    {
-      "name": "ComputerToActuator",
-      "type": "Assigning"
     }
   ],
   "edges":[
@@ -66,30 +58,6 @@
       "parent": "ActuatorSelection",
       "child": "ActuatorTypeSelection",
       "operates_on": "actuator_types"
-    },
-    {
-      "parent": "SensorTypeSelection",
-      "child": "SensorToComputer",
-      "operates_on": "sensors",
-      "type": "FROM"
-    },
-    {
-      "parent": "ComputerTypeSelection",
-      "child": "SensorToComputer",
-      "operates_on": "computers",
-      "type": "TO"
-    },
-    {
-      "parent": "SensorToComputer",
-      "child": "ComputerToActuator",
-      "operates_on": "computers",
-      "type": "FROM"
-    },
-    {
-      "parent": "ActuatorTypeSelection",
-      "child": "ComputerToActuator",
-      "operates_on": "actuators",
-      "type": "TO"
     }
   ]
 }

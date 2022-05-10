@@ -33,19 +33,18 @@ public class Decision {
 
     public String                       node_name;
     public String                       node_type;
+    public String                       node_options;
     protected JsonArray                 decisions;
-
-
-
-    protected DatabaseClient client;
-    protected Graph          graph;
-    protected Record node;
-    protected ArrayList<Decision> parents;
+    protected JsonArray                 decisions_refs; // --> Holds references to places in DesignBuilder.object to search for keys
+    protected DatabaseClient            client;
+    protected Graph                     graph;
+    protected Record                    node;
+    protected ArrayList<Decision>       parents;
     protected ArrayList<Record>         children;
     protected HashMap<String, Decision> decision_nodes;
-    protected Gson gson;
-    protected Random rand;
-    protected String debug_dir;
+    protected Gson                      gson;
+    protected Random                    rand;
+    protected String                    debug_dir;
 
 
 //     ____        _ _     _
@@ -60,25 +59,29 @@ public class Decision {
         protected DatabaseClient            client;
         protected String                    node_name;
         protected String                    node_type;
+        protected String                    node_options;
         protected Record                    node;
         protected ArrayList<Decision>       parents;
         protected ArrayList<Record>         children;
         protected HashMap<String, Decision> decision_nodes;
         protected Gson                      gson;
         protected JsonArray                 decisions;
+        protected JsonArray                 decisions_refs; // --> Holds references to places in DesignBuilder.object to search for keys
         protected JsonArray                 parameters;
         protected Random                    rand;
 
         protected String                    debug_dir;
 
         public Builder(Record node){
-            this.node        = node;
-            this.node_name   = node.get("names.name").toString().replace("\"", "");
-            this.node_type   = node.get("names.type").toString().replace("\"", "");
+            this.node           = node;
+            this.node_name      = node.get("names.name").toString().replace("\"", "");
+            this.node_type      = node.get("names.type").toString().replace("\"", "");
+            this.node_options   = node.get("names.options").toString().replace("\"", "");
             this.parents        = new ArrayList<>();
             this.decision_nodes = new HashMap<>();
             this.gson           = new GsonBuilder().setPrettyPrinting().create();
             this.decisions      = new JsonArray();
+            this.decisions_refs      = new JsonArray();
             this.parameters     = new JsonArray();
             this.rand           = new Random();
             this.debug_dir      = null;
@@ -133,6 +136,8 @@ public class Decision {
         this.gson           = builder.gson;
         this.decisions      = builder.decisions;
         this.rand           = builder.rand;
+        this.node_options   = builder.node_options;
+        this.decisions_refs = builder.decisions_refs;
     }
 
     public void setGraph(Graph graph) {
@@ -183,11 +188,20 @@ public class Decision {
 //
 
 
-    protected void indexDecision(JsonObject dependencies){
+    protected void indexDecision(JsonObject decision){
 
         // --> The dependencies object should contain the architecture decision
-        JsonObject decision = dependencies.deepCopy();
+        this.decisions.add(decision.deepCopy());
 
+        // --> Take snapshot of design decision
+        DesignBuilder.takeSnapshot();
+    }
+
+
+    protected void indexDecision(JsonObject decision, JsonElement decision_refs){
+
+        // --> The dependencies object should contain the architecture decision
+        this.decisions_refs.add(decision_refs);
         this.decisions.add(decision);
 
         // --> Take snapshot of design decision
@@ -227,96 +241,9 @@ public class Decision {
 //                                            | |                                             __/ |
 //                                            |_|                                            |___/
 
-
-    protected void recursiveJsonSearch(JsonElement data_source, String operates_on, JsonObject dependencies){
-        this.recursiveJsonRefSearch(data_source, operates_on, dependencies);
+    public JsonElement getLastDecisionRefs(){
+        return this.decisions_refs.get(this.decisions_refs.size()-1);
     }
-
-    protected void recursiveJsonRefSearch(JsonElement data_source, String operates_on, JsonObject dependencies){
-
-        if(data_source.isJsonArray()){
-            JsonArray json_dependency_ary = data_source.getAsJsonArray();
-            for(JsonElement element: json_dependency_ary){
-                this.recursiveJsonRefSearch(element, operates_on, dependencies);
-            }
-        }
-        else if(data_source.isJsonObject()){
-            JsonObject json_dependency_obj = data_source.getAsJsonObject();
-
-            // --> Try to get element UID
-            String uid = "null";
-            if(json_dependency_obj.has("uid")){
-                uid = json_dependency_obj.get("uid").getAsString();
-            }
-
-            for(String key: json_dependency_obj.keySet()){
-                JsonElement value = json_dependency_obj.get(key);
-                if(key.equalsIgnoreCase(operates_on) && value.isJsonArray()){
-
-                    // --> Check if duplicate UID is present
-                    if(dependencies.keySet().contains(uid)){
-                        System.out.println("--> ERROR: duplicate UIDs when searching for operates on in recursive search");
-                        System.exit(0);
-                    }
-                    dependencies.add(uid, value.getAsJsonArray());
-                }
-                else{
-                    this.recursiveJsonRefSearch(value, operates_on, dependencies);
-                }
-            }
-        }
-
-    }
-
-
-
-
-    protected void recursiveJsonSearchAssigning(JsonElement data_source, String operates_on, JsonObject dependencies, boolean is_root, boolean delete_ref){
-        this.recursiveJsonRefSearchAssigning(data_source, operates_on, dependencies, is_root, delete_ref);
-    }
-
-    protected void recursiveJsonRefSearchAssigning(JsonElement data_source, String operates_on, JsonObject dependencies, boolean is_root, boolean delete_ref){
-
-        if(data_source.isJsonArray()){
-            JsonArray json_dependency_ary = data_source.getAsJsonArray();
-            for(JsonElement element: json_dependency_ary){
-                this.recursiveJsonRefSearchAssigning(element, operates_on, dependencies, is_root, delete_ref);
-            }
-        }
-        else if(data_source.isJsonObject()){
-            JsonObject json_dependency_obj = data_source.getAsJsonObject();
-
-            // --> Try to get element UID
-            String uid = "null";
-            if(json_dependency_obj.has("uid")){
-                uid = json_dependency_obj.get("uid").getAsString();
-            }
-
-            for(String key: json_dependency_obj.keySet()){
-                JsonElement value = json_dependency_obj.get(key);
-                if(key.equalsIgnoreCase(operates_on) && value.isJsonArray()){
-
-                    // --> Check if duplicate UID is present
-                    if(dependencies.keySet().contains(uid)){
-                        System.out.println("--> ERROR: duplicate UIDs when searching for operates on in recursive search");
-                        System.exit(0);
-                    }
-                    if(!is_root && delete_ref){
-                        dependencies.add(uid, value.getAsJsonArray().deepCopy());
-                        json_dependency_obj.remove(key);
-                    }
-                    else{
-                        dependencies.add(uid, value.getAsJsonArray());
-                    }
-                }
-                else{
-                    this.recursiveJsonRefSearchAssigning(value, operates_on, dependencies, is_root, delete_ref);
-                }
-            }
-        }
-
-    }
-
 
 //     _____                    _                     _____              _
 //    |  __ \                  | |                   |  __ \            (_)
@@ -353,6 +280,25 @@ public class Decision {
     }
 
 
+//     __  __         _          _             _____  _
+//    |  \/  |       | |        | |           / ____|| |
+//    | \  / | _   _ | |_  __ _ | |_  ___    | |     | |__   _ __  ___   _ __ ___    ___   ___   ___   _ __ ___    ___
+//    | |\/| || | | || __|/ _` || __|/ _ \   | |     | '_ \ | '__|/ _ \ | '_ ` _ \  / _ \ / __| / _ \ | '_ ` _ \  / _ \
+//    | |  | || |_| || |_| (_| || |_|  __/   | |____ | | | || |  | (_) || | | | | || (_) |\__ \| (_) || | | | | ||  __/
+//    |_|  |_| \__,_| \__|\__,_| \__|\___|    \_____||_| |_||_|   \___/ |_| |_| |_| \___/ |___/ \___/ |_| |_| |_| \___|
+
+
+    public void mutateChromosome(JsonObject decision, double probability){
+        /*
+            - Decision classes are to override this method and perform a decision specific mutation
+         */
+    }
+
+
+
+
+
+
 //     ______                                             _    _
 //    |  ____|                                           | |  (_)
 //    | |__    _ __   _   _  _ __ ___    ___  _ __  __ _ | |_  _   ___   _ __
@@ -372,5 +318,11 @@ public class Decision {
 //    | |  | || __|| || |
 //    | |__| || |_ | || |
 //     \____/  \__||_||_|
+
+
+    public static boolean getProbabilityResult(double probability){
+        Random rand = new Random();
+        return (rand.nextDouble() <= probability);
+    }
 
 }

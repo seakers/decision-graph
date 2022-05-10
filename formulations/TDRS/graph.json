@@ -7,6 +7,10 @@
     {
       "name": "Contract Modalities",
       "type": "StandardForm"
+    },
+    {
+      "name": "Isp Payloads",
+      "type": "StandardForm"
     }
   ],
   "edges":[
@@ -26,6 +30,11 @@
       "parent": "Antenna Assignment",
       "child": "Contract Modalities",
       "operates_on": "contract-modalities"
+    },
+    {
+      "parent": "Antenna Assignment",
+      "child": "Isp Payloads",
+      "operates_on": "isl-payloads"
     }
   ]
 }

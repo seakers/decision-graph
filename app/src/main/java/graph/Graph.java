@@ -72,7 +72,6 @@ public class Graph {
 
             // --> TODO: Add other problems
             if(this.formulation.equals("TDRS")){
-                // this.client.indexTDRS();
                 this.client.indexFormulation();
             }
 
@@ -85,7 +84,7 @@ public class Graph {
             this.inputs = problem_info.getAsJsonObject("inputs").deepCopy();
             int[] uid = {0};
             this.initInputs(this.inputs, uid);
-            Files.writeDebugFile("/decisions/debug/problem/tdrs.json", this.inputs);
+            Files.writeDebugFile("/decisions/debug/problem/inputs.json", this.inputs);
             this.designs = problem_info.getAsJsonArray("designs").deepCopy();
             return this;
         }
@@ -103,7 +102,6 @@ public class Graph {
                 // --> Add desired property to JsonObject
                 input_obj.addProperty("uid", uid[0]);
                 uid[0]++;
-                input_obj.addProperty("active", Boolean.TRUE);
 
                 for(String key: input_obj.keySet()){
                     JsonElement value = input_obj.get(key);

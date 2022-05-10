@@ -68,7 +68,9 @@ public class Consumer implements Runnable{
         try{
             int d1 = this.graph.generateRandomDesign();
             int d2 = this.graph.generateRandomDesign();
-            this.graph.crossoverDesigns(d1, d2, 0.5);
+
+            System.out.println("\n------- CROSSOVER -------");
+            this.graph.crossoverDesigns(d1, d2, 0.4);
         }
         catch (Exception ex){
             ex.printStackTrace();

@@ -42,6 +42,21 @@ public class BitString {
         return bit_str;
     }
 
+    public static ArrayList<Integer> getRandomCount(int length){
+        Random rand = new Random();
+        ArrayList<Integer> bit_str = BitString.getZeros(length);
+
+        int count = rand.nextInt(length);
+        for(int x = 0; x <= count; x++){
+            bit_str.set(x, 1);
+        }
+        return bit_str;
+    }
+
+
+
+
+
     public static ArrayList<Integer> getRandomSF(int length){
         Random rand = new Random();
         ArrayList<Integer> bit_str = new ArrayList<>();
