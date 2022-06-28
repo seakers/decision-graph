@@ -51,7 +51,6 @@ public class DownSelecting extends Decision {
 
         JsonObject dependencies = new JsonObject();
 
-
         for(Decision parent: this.parents){
             this.mergeParent(dependencies, parent);
         }
@@ -98,15 +97,9 @@ public class DownSelecting extends Decision {
             // data_source = parent.getLastDecisionRefs();
         }
 
-
         // --> VERSION 1: Get dependency references
         JsonObject dependency_refs = new JsonObject();
-        DesignBuilder.recursiveJsonSearch(data_source, operates_on, dependency_refs);
-
-        // --> VERSION 2: Get dependency references
-//        JsonObject dependency_refs = new JsonObject();
-//        JsonArray decision_refs = new JsonArray();
-//        this.recursiveJsonShallowSearch(data_source, operates_on, dependency_refs, decision_refs);
+        DesignBuilder.referenceSearch(data_source, operates_on, dependency_refs, false);
 
 
 

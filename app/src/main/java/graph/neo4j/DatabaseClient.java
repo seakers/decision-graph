@@ -59,6 +59,18 @@ public class DatabaseClient {
     }
 
 
+
+    public boolean validateConnection(){
+        try{
+            this.driver.verifyConnectivity();
+        }
+        catch(Exception ex){
+            return false;
+        }
+        return true;
+    }
+
+
 //      ____                  _
 //     / __ \                (_)
 //    | |  | |_   _  ___ _ __ _  ___  ___
@@ -497,6 +509,35 @@ public class DatabaseClient {
 //    | |  | (_) || |   | | | | | || |_| || || (_| || |_ | || (_) || | | |\__ \
 //    |_|   \___/ |_|   |_| |_| |_| \__,_||_| \__,_| \__||_| \___/ |_| |_||___/
 
+
+    public void indexCameoFormulation(JsonObject adg_specs){
+        try (Session session1 = this.driver.session()){
+            JsonObject graph_object = adg_specs.getAsJsonObject("graph");
+            JsonObject problem_object = adg_specs.getAsJsonObject("inputs");
+
+
+            // --> 1. Create Neo4j problem JsonObject
+            JsonObject problem_obj = new JsonObject();
+            problem_obj.add("inputs", problem_object);
+            problem_obj.add("designs", new JsonArray());
+
+            // --> 2. Add specific problem to object containing problems
+            JsonObject formulation_problems = new JsonObject();
+            formulation_problems.add(this.problem, problem_obj);
+            String root_problems = this.gson.toJson(formulation_problems);
+
+
+
+            // --> 3. Index nodes
+            this.indexNodes(session1, graph_object, root_problems);
+
+            // --> 4. Index edges
+            this.indexEdges(session1, graph_object);
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
 
 
     // --> TODO: Make this a generic function that creates the graph based on a graph.json file and the problem from problem.json

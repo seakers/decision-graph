@@ -55,16 +55,15 @@ public class App {
 //     \_____|\___/ |_| |_||___/ \__,_||_| |_| |_| \___||_|
 
 
-        // --> 1. Build consumer
-        Consumer consumer = new Consumer.Builder(env).build();
-
-
-        // --> 2. Run Consumer
         try {
+            // --> 1. Build consumer
+            Consumer consumer = new Consumer.Builder(env).build();
+
+            // --> 2. Run Consumer
             consumer.run();
         }
-        catch (Exception e) {
-            throw e;
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
         finally {
             System.out.println("--> FINISHED RUNNING CONSUMER");

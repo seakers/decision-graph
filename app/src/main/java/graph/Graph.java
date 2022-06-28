@@ -6,10 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import graph.chromosome.DesignBuilder;
-import graph.decisions.Assigning;
-import graph.decisions.DownSelecting;
-import graph.decisions.Root;
-import graph.decisions.StandardForm;
+import graph.decisions.*;
 import graph.neo4j.DatabaseClient;
 import org.neo4j.driver.Record;
 
@@ -18,13 +15,48 @@ import java.util.HashMap;
 
 public class Graph {
 
+    // -----------------------------
+    // ----- SINGLETON PATTERN -----
+    // -----------------------------
 
-    private String                    problem;
-    private String                    formulation;
-    private DatabaseClient            client;
-    private ArrayList<Record>         topologicalNodes;
-    private HashMap<String, Decision> decisions;
-    private Decision                  root;
+    private static Graph instance = new Graph();
+
+    public static Graph getInstance() { return instance; }
+
+    public static boolean buildInstance(String uri, String user, String password, String formulation, String problem, boolean reset_nodes, boolean reset_graphs, JsonObject adg_specs){
+
+        // --> 1. Build DatabaseClient
+        DatabaseClient db_client = new DatabaseClient.Builder(uri)
+                .setCredentials(user, password)
+                .setFormulation(formulation)
+                .setProblem(problem)
+                .build();
+        if(!db_client.validateConnection()){
+            return false;
+        }
+
+        // --> 2. Build Graph
+        instance = new Graph.Builder(db_client, formulation, problem, reset_nodes, reset_graphs, adg_specs)
+                .indexGraph()
+                .buildTopologicalOrdering()
+                .projectGraph()
+                .build();
+        return true;
+    }
+
+    public boolean isBuilt = false;
+
+    // ---------------------
+    // ----- VARIABLES -----
+    // ---------------------
+
+    private String                     problem;
+    private String                     formulation;
+    private DatabaseClient             client;
+    private ArrayList<Record>          topologicalNodes;
+    private HashMap<String, Decision>  decisions;
+    private Decision                   root;
+    private JsonObject                 adg_specs;
 
 
 
@@ -50,11 +82,15 @@ public class Graph {
         private HashMap<String, Decision> decisions;
         private ArrayList<Record>         depthFirstNodes;
         private ArrayList<Record>         topologicalNodes;
+        private JsonObject adg_specs;
+
         private JsonObject inputs;
         private JsonArray designs;
 
-        public Builder(DatabaseClient client, String formulation, String problem, boolean reset_nodes, boolean reset_graphs) {
+
+        public Builder(DatabaseClient client, String formulation, String problem, boolean reset_nodes, boolean reset_graphs, JsonObject adg_specs) {
             this.client  = client;
+            this.adg_specs = adg_specs;
             this.problem = problem;
             this.formulation = formulation;
             this.topologicalNodes  = new ArrayList<>();
@@ -71,9 +107,8 @@ public class Graph {
         public Builder indexGraph(){
 
             // --> TODO: Add other problems
-            if(this.formulation.equals("TDRS")){
-                this.client.indexFormulation();
-            }
+            // this.client.indexFormulation();
+            this.client.indexCameoFormulation(this.adg_specs);
 
             // --> Finally, set problem info (inputs / designs) and return
             return this.setProblemInfo();
@@ -84,7 +119,10 @@ public class Graph {
             this.inputs = problem_info.getAsJsonObject("inputs").deepCopy();
             int[] uid = {0};
             this.initInputs(this.inputs, uid);
-            Files.writeDebugFile("/decisions/debug/problem/inputs.json", this.inputs);
+
+            // Files.writeDebugFile(Files.debug_dir + "\\problem\\inputs.json", this.inputs); // WINDOWS
+            Files.writeDebugFile(Files.debug_dir + "/problem/inputs.json", this.inputs); // LINUX
+
             this.designs = problem_info.getAsJsonArray("designs").deepCopy();
             return this;
         }
@@ -143,7 +181,7 @@ public class Graph {
             if(node_name.equalsIgnoreCase("Root") && node_type.equalsIgnoreCase("Root")){
                 this.root = new Root.Builder(node)
                         .setDatabaseClient(this.client)
-                        .setDebugDir("/decisions/debug/root/")
+                        .setDebugDir(Files.debug_dir + "/root/") // WINDOWS: Replace / with \\
                         .setChildren()
                         .build();
                 this.decisions.put(node_name, this.root);
@@ -153,7 +191,7 @@ public class Graph {
                 if(node_type.equals("Assigning")){
                     selection = new Assigning.Builder(node)
                             .setDatabaseClient(this.client)
-                            .setDebugDir("/decisions/debug/assigning/")
+                            .setDebugDir(Files.debug_dir + "/assigning/")
                             .setParents(this.decisions)
                             .setChildren()
                             .setDecisions()
@@ -162,7 +200,7 @@ public class Graph {
                 else if(node_type.equals("DownSelecting")){
                     selection = new DownSelecting.Builder(node)
                             .setDatabaseClient(this.client)
-                            .setDebugDir("/decisions/debug/downselecting/")
+                            .setDebugDir(Files.debug_dir + "/downselecting/")
                             .setParents(this.decisions)
                             .setChildren()
                             .setDecisions()
@@ -171,7 +209,16 @@ public class Graph {
                 else if(node_type.equals("StandardForm")){
                     selection = new StandardForm.Builder(node)
                             .setDatabaseClient(this.client)
-                            .setDebugDir("/decisions/debug/standardform/")
+                            .setDebugDir(Files.debug_dir + "/standardform/")
+                            .setParents(this.decisions)
+                            .setChildren()
+                            .setDecisions()
+                            .build();
+                }
+                else if(node_type.equals("Partitioning")){
+                    selection = new Partitioning.Builder(node)
+                            .setDatabaseClient(this.client)
+                            .setDebugDir(Files.debug_dir + "/partitioning/")
                             .setParents(this.decisions)
                             .setChildren()
                             .setDecisions()
@@ -202,6 +249,7 @@ public class Graph {
         public Graph build(){
             Graph build             = new Graph();
             build.client            = this.client;
+            build.adg_specs         = this.adg_specs;
             build.topologicalNodes  = this.topologicalNodes;
             build.decisions         = this.decisions;
             build.root              = this.root;
@@ -209,6 +257,7 @@ public class Graph {
             build.designs           = this.designs;
             build.problem           = problem;
             build.formulation       = formulation;
+            build.isBuilt           = true;
 
             // --> Set graph for each decision node
             for(Decision node: this.decisions.values()){
@@ -271,7 +320,7 @@ public class Graph {
         }
 
         // --> 2. Save design
-        Files.writeDebugFile("/decisions/debug/designs/DESIGN-"+this.designs.size()+".json", DesignBuilder.object);
+        Files.writeDebugFile(Files.debug_dir + "/designs/DESIGN-"+this.designs.size()+".json", DesignBuilder.object);
         this.designs.add(DesignBuilder.object.deepCopy());
 
 
@@ -351,6 +400,32 @@ public class Graph {
 
 
 
+//     _____              _                __      __
+//    |  __ \            (_)               \ \    / /
+//    | |  | |  ___  ___  _   __ _  _ __    \ \  / /__ _  _ __  ___
+//    | |  | | / _ \/ __|| | / _` || '_ \    \ \/ // _` || '__|/ __|
+//    | |__| ||  __/\__ \| || (_| || | | |    \  /| (_| || |   \__ \
+//    |_____/  \___||___/|_| \__, ||_| |_|     \/  \__,_||_|   |___/
+//                            __/ |
+//                           |___/
+
+    public int countDesignVariables(int design_idx){
+        int count = 0;
+
+        for(Record node: this.topologicalNodes){
+            String node_name = Graph.getNodeName(node);
+            String node_type = Graph.getNodeType(node);
+
+            Decision current = this.decisions.get(node_name);
+            count += current.countDesignVariables(design_idx);
+        }
+
+        return count;
+    }
+
+
+
+
 //     _    _        _
 //    | |  | |      | |
 //    | |__| |  ___ | | _ __    ___  _ __  ___
@@ -378,5 +453,7 @@ public class Graph {
     public static String removeQuotes(String obj){
         return obj.replace("\"", "");
     }
+
+
 
 }

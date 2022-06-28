@@ -10,8 +10,9 @@ import graph.chromosome.DesignBuilder;
 import org.neo4j.driver.Record;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class StandardForm extends Decision {
+public class Partitioning extends Decision {
 
 //     ____        _ _     _
 //    |  _ \      (_) |   | |
@@ -20,19 +21,19 @@ public class StandardForm extends Decision {
 //    | |_) | |_| | | | (_| |  __/ |
 //    |____/ \__,_|_|_|\__,_|\___|_|
 
-
-    public static class Builder extends Decision.Builder<StandardForm.Builder>{
+    public static class Builder extends Decision.Builder<Partitioning.Builder>{
 
         public Builder(Record node){
             super(node);
         }
 
-        public StandardForm build() { return new StandardForm(this); }
+        public Partitioning build() { return new Partitioning(this); }
     }
 
-    protected StandardForm(StandardForm.Builder builder){
+    protected Partitioning(Partitioning.Builder builder){
         super(builder);
     }
+
 
 //     __  __                       _____                            _                 _
 //    |  \/  |                     |  __ \                          | |               (_)
@@ -43,14 +44,14 @@ public class StandardForm extends Decision {
 //                      __/ |                  | |
 //                     |___/                   |_|
 
-    private JsonObject mergeDependencies(){
+
+    private JsonObject mergeDependencies() {
 
         // ----> There are two types of dependencies
         // ----- Root dependency: keys searched for in problem inputs json object
         // - Decision dependency: keys searched for in constructed architecture json object
 
         JsonObject dependencies = new JsonObject();
-
 
         for(Decision parent: this.parents){
             this.mergeParent(dependencies, parent);
@@ -73,11 +74,10 @@ public class StandardForm extends Decision {
         }
     }
 
-    public void mergeParentRelationship(JsonObject dependencies, JsonObject relationship, boolean is_root, Decision parent){
+    public void mergeParentRelationship(JsonObject dependencies, JsonObject relationship, boolean is_root, Decision parent_node){
 
         // --> Relationship properties
         String operates_on = relationship.get("operates_on").getAsString();
-
 
         /*
             - data_source can be set from two different sources depending on two respective cases
@@ -96,48 +96,70 @@ public class StandardForm extends Decision {
             // data_source = parent.getLastDecisionRefs();
         }
 
-
-
-        // --> VERSION 1: Get dependency references
-        JsonObject dependency_refs = new JsonObject();
-        DesignBuilder.referenceSearch(data_source, operates_on, dependency_refs, false);
-
-        // --> VERSION 2: Get dependency references
+//        // --> VERSION 1: Get dependency references
 //        JsonObject dependency_refs = new JsonObject();
-//        JsonArray decision_refs = new JsonArray();
-//        this.recursiveJsonShallowSearch(data_source, operates_on, dependency_refs, decision_refs);
+//        DesignBuilder.referenceSearch(data_source, operates_on, dependency_refs, false);
+//
+//        // --> Copy dependency references to decision dependencies
+//        for(String parent_uid: dependency_refs.keySet()){
+//            JsonObject dependency_relationship = new JsonObject();
+//            if(dependencies.has(parent_uid)){
+//                System.out.println("--> ERROR: duplicate uids in decision dependencies down selecting");
+//                System.exit(0);
+//            }
+//
+//            JsonArray ref_uids = new JsonArray();
+//            for(JsonElement element: dependency_refs.getAsJsonArray(parent_uid)){
+//                ref_uids.add(element.getAsJsonObject().get("uid").getAsString());
+//            }
+//
+//            if(is_root){
+//                dependency_relationship.add("ref", dependency_refs.getAsJsonArray(parent_uid).deepCopy());
+//            }
+//            else{
+//                dependency_relationship.add("ref", dependency_refs.getAsJsonArray(parent_uid));
+//            }
+//            dependency_relationship.addProperty("source", source);
+//            dependency_relationship.addProperty("key", operates_on);
+//            dependency_relationship.add("ref_uids", ref_uids);
+//
+//            // --> Add dependency relationship to object
+//            dependencies.add(parent_uid, dependency_relationship);
+//        }
 
 
-
-        // --> Copy dependency references to decision dependencies
-        for(String parent_uid: dependency_refs.keySet()){
+        JsonArray parents = DesignBuilder.parentSearch(data_source, operates_on);
+        for(JsonElement parent_element: parents){
             JsonObject dependency_relationship = new JsonObject();
-            if(dependencies.has(parent_uid)){
-                System.out.println("--> ERROR: duplicate uids in decision dependencies down selecting");
-                System.exit(0);
+            JsonObject parent = parent_element.getAsJsonObject();
+
+
+            // --> 1. Get parent uid
+            String parent_uid = "null";
+            if(parent.has("uid")){
+                parent_uid = parent.get("uid").getAsString();
             }
 
+            // --> 2. Get operates_on reference object
+            JsonArray ref = parent.getAsJsonArray(operates_on).deepCopy();
+
+            // --> 3. Get ref uids
             JsonArray ref_uids = new JsonArray();
-            for(JsonElement element: dependency_refs.getAsJsonArray(parent_uid)){
+            for(JsonElement element: ref){
                 ref_uids.add(element.getAsJsonObject().get("uid").getAsString());
             }
 
-
-            if(is_root){
-                dependency_relationship.add("ref", dependency_refs.getAsJsonArray(parent_uid).deepCopy());
-            }
-            else{
-                dependency_relationship.add("ref", dependency_refs.getAsJsonArray(parent_uid));
-            }
+            // --> 4. Build dependency_relationship info object
+            dependency_relationship.add("ref", ref);
             dependency_relationship.addProperty("source", source);
             dependency_relationship.addProperty("key", operates_on);
             dependency_relationship.add("ref_uids", ref_uids);
+            dependency_relationship.add("parent", parent);
 
-            // --> Add dependency relationship to object
+            // --> 5. Add relationship info to dependency object
             dependencies.add(parent_uid, dependency_relationship);
         }
     }
-
 
 //     _____                    _                     _____              _
 //    |  __ \                  | |                   |  __ \            (_)
@@ -157,17 +179,15 @@ public class StandardForm extends Decision {
     }
 
     @Override
-    public void generateRandomDesign(JsonObject dependencies) throws Exception{
+    public void generateRandomDesign(JsonObject dependencies) throws Exception {
 
+        // --> 1. Each uid key in `dependencies` points to a JsonArray in which to partition elements
+        // - Generate random partitioning decision for each
 
-
-
-        // --> 1. Each uid key in `dependencies` points to a JsonArray to SF select upon
-        // - Generate random design for each
-
-        for(String uid: dependencies.keySet()){
+        for(String uid: dependencies.keySet()) {
             JsonObject dependency = dependencies.getAsJsonObject(uid);
-            ArrayList<Integer> chromosome = BitString.getRandomSF(dependency.getAsJsonArray("ref").size());
+            int num_items = dependency.getAsJsonArray("ref").size();
+            ArrayList<Integer> chromosome = BitString.getRandomPA(num_items, num_items);
             dependency.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray());
         }
 
@@ -178,7 +198,6 @@ public class StandardForm extends Decision {
         // --> 3. Index decision into store
         this.indexDecision(dependencies);
     }
-
 
 
 //      _____                                                 _____              _
@@ -198,7 +217,7 @@ public class StandardForm extends Decision {
     }
 
     @Override
-    public void crossoverDesigns(int papa, int mama, double mutation_probability, JsonObject dependencies) throws Exception{
+    public void crossoverDesigns(int papa, int mama, double mutation_probability, JsonObject dependencies) throws Exception {
 
         // --> Papa
         JsonObject papa_decision = this.decisions.get(papa).getAsJsonObject();
@@ -209,20 +228,20 @@ public class StandardForm extends Decision {
         // --> Child Dependencies
         JsonObject child_decision = dependencies;
 
+
         this.writeCrossoverDebugFile(papa_decision, "papa_decision.json");
         this.writeCrossoverDebugFile(mama_decision, "mama_decision.json");
-
 
         /*
             - In the decision, only so much information can be taken from each parent. We
                 try to maximize the information that can be taken from each parent
 
-            - The new uid system can be used to determine exactly which elements are assigned to / from
-                for each parent decision. The links for each parent are assessed and encoded into the child as
-                to maximize information extraction while balancing between parents
+            - The new uid system can be used to determine exactly which parent decision elements
+            partitioning can be inherited
          */
         this.extractFeasibleParentInfo(papa_decision, child_decision, "papa_info");
         this.extractFeasibleParentInfo(mama_decision, child_decision, "mama_info");
+
 
         /*
             - After extracting all usable information from the parents, crossover the usable info and
@@ -230,38 +249,33 @@ public class StandardForm extends Decision {
          */
         this.crossoverUsableInfo(child_decision);
 
-
         /*
             - Mutate chromosome probability is found true
          */
         this.mutateChromosome(child_decision, mutation_probability);
 
+
         /*
             - Build crossover decision
          */
-        this.writeCrossoverDebugFile(child_decision, "child_dependencies.json");
+        this.writeCrossoverDebugFile(child_decision, "child_decision.json");
         this.buildDecision(child_decision);
 
-
         /*
-            - Finally, index the decision
+            - Index decision into store
          */
         this.indexDecision(child_decision);
     }
 
-    public void extractFeasibleParentInfo(JsonObject parent_decision, JsonObject child_decision, String info_key) {
-
-        /*
-            For each component decision (denoted with a uid), extract parent info
-         */
+    public void extractFeasibleParentInfo(JsonObject parent_decision, JsonObject child_decision, String info_key){
 
         for(String child_uid: child_decision.keySet()){
-            JsonObject         child_decision_component = child_decision.getAsJsonObject(child_uid);
-            ArrayList<String>  child_decision_uids       = this.gson.fromJson(child_decision_component.getAsJsonArray("ref_uids"), new TypeToken<ArrayList<String>>(){}.getType());
+            JsonObject child_decision_component = child_decision.getAsJsonObject(child_uid);
+            ArrayList<String> child_decision_uids = this.gson.fromJson(child_decision_component.getAsJsonArray("ref_uids"), new TypeToken<ArrayList<String>>(){}.getType());
             ArrayList<Integer> parent_info              = BitString.getEmptyInfo(child_decision_uids.size());
             if(parent_decision.has(child_uid)){
-                JsonObject         parent_decision_component  = parent_decision.getAsJsonObject(child_uid);
-                ArrayList<String> parent_decision_uids       = this.gson.fromJson(parent_decision_component.getAsJsonArray("ref_uids"), new TypeToken<ArrayList<String>>(){}.getType());
+                JsonObject parent_decision_component  = parent_decision.getAsJsonObject(child_uid);
+                ArrayList<String> parent_decision_uids = this.gson.fromJson(parent_decision_component.getAsJsonArray("ref_uids"), new TypeToken<ArrayList<String>>(){}.getType());
                 ArrayList<Integer> parent_decision_chromosome = this.gson.fromJson(parent_decision_component.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
                 for(int x = 0; x < parent_info.size(); x++){
                     String child_decision_uid = child_decision_uids.get(x);
@@ -275,39 +289,48 @@ public class StandardForm extends Decision {
         }
     }
 
-
-
     public void crossoverUsableInfo(JsonObject child_decision){
 
         /*
             - For each decision component, crossover mama_info and papa_info to create chromosome
          */
-
         for(String child_uid: child_decision.keySet()) {
             JsonObject child_decision_component = child_decision.getAsJsonObject(child_uid);
             ArrayList<Integer> papa_info        = this.gson.fromJson(child_decision_component.getAsJsonArray("papa_info"), new TypeToken<ArrayList<Integer>>(){}.getType());
             ArrayList<Integer> mama_info        = this.gson.fromJson(child_decision_component.getAsJsonArray("mama_info"), new TypeToken<ArrayList<Integer>>(){}.getType());
             ArrayList<Integer> chromosome       = BitString.getZeros(papa_info.size());
 
-            if(papa_info.contains(1) && mama_info.contains(1)){
-                if(this.rand.nextBoolean()){
-                    chromosome.set(papa_info.indexOf(1), 1);
-                }
-                else{
-                    chromosome.set(mama_info.indexOf(1), 1);
-                }
-            }
-            else if(papa_info.contains(1)){
-                chromosome.set(papa_info.indexOf(1), 1);
-            }
-            else if(mama_info.contains(1)){
-                chromosome.set(mama_info.indexOf(1), 1);
-            }
-            else{
-                chromosome.set(this.rand.nextInt(chromosome.size()), 1);
+            int papa_groups = Collections.max(papa_info);
+            int mama_groups = Collections.max(papa_info);
+            int max_groups = papa_groups;
+            if(mama_groups < papa_groups){
+                max_groups = mama_groups;
             }
 
-            child_decision_component.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray());
+            for(int x = 0; x < chromosome.size(); x++) {
+                int papa_bit = papa_info.get(x);
+                int mama_bit = mama_info.get(x);
+                if(papa_bit != -1 && mama_bit != -1){
+                    if(this.rand.nextBoolean()){
+                        chromosome.set(x, mama_bit);
+                    }
+                    else{
+                        chromosome.set(x, papa_bit);
+                    }
+                }
+                else if(papa_bit != -1){
+                    chromosome.set(x, papa_bit);
+                }
+                else if(mama_bit != -1){
+                    chromosome.set(x, mama_bit);
+                }
+                else{
+                    chromosome.set(x, this.rand.nextInt(max_groups) + 1);
+                }
+            }
+            ArrayList<Integer> repaired_chromosome = BitString.repairPA(chromosome);
+
+            child_decision_component.add("chromosome", this.gson.toJsonTree(repaired_chromosome).getAsJsonArray());
         }
     }
 
@@ -323,27 +346,8 @@ public class StandardForm extends Decision {
     public void mutateChromosome(JsonObject decision, double probability){
         if(Decision.getProbabilityResult(probability)){
 
-
-//            ArrayList<Integer> chromosome = this.gson.fromJson(decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
-//            decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
-//
-//            // --> 1. Get a random bit index to flip
-//            int rand_idx = this.rand.nextInt(chromosome.size());
-//            if(chromosome.get(rand_idx) == 0){
-//                chromosome.set(rand_idx, 1);
-//            }
-//            else if(chromosome.get(rand_idx) == 1){
-//                chromosome.set(rand_idx, 0);
-//            }
-//            else{
-//                System.out.println("--> ERROR: chromosome element to mutate not in proper form (assigning)");
-//                System.exit(0);
-//            }
-//
-//            decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
         }
     }
-
 
 
 
@@ -354,9 +358,8 @@ public class StandardForm extends Decision {
 //    | |_) || |_| || || || (_| | | |__| ||  __/| (__ | |\__ \| || (_) || | | |
 //    |____/  \__,_||_||_| \__,_| |_____/  \___| \___||_||___/|_| \___/ |_| |_|
 
-
     @Override
-    protected void buildDecision(JsonObject decision){
+    protected void buildDecision(JsonObject decision) {
 
         /*
             - Steps to process each decision component reference
@@ -366,33 +369,43 @@ public class StandardForm extends Decision {
         for(String uid: decision.keySet()){
             JsonObject decision_component = decision.getAsJsonObject(uid);
             JsonArray array_ref = decision_component.getAsJsonArray("ref");
-            String operates_on = decision_component.get("key").getAsString().replace("\"", "");
             ArrayList<Integer> chromosome = this.gson.fromJson(decision_component.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+            String operates_on = decision_component.get("key").getAsString().replace("\"", "");
 
-            // --> Step 1
+            // --> 1. Create group object to be added to parent
+            String groups_name = operates_on + "-groups"; // Be able to set this name in cameo
+            if(!this.node_options.equalsIgnoreCase("null")){
+                groups_name = this.node_options + "s";
+            }
+            JsonArray new_groups = new JsonArray();
             if(decision_component.get("source").getAsString().contains("root")){
-                if(!DesignBuilder.object.has(operates_on)){
-                    DesignBuilder.object.add(operates_on, array_ref);
-                }
-                else{
-                    System.out.println("--> ERROR: overwriting decision data in SF decision");
-                    System.exit(0);
-                }
+                DesignBuilder.object.add(groups_name, new_groups);
+            }
+            else{
+                decision_component.getAsJsonObject("parent").add(groups_name, new_groups);
+                decision_component.getAsJsonObject("parent").remove(operates_on);
             }
 
-            // --> Step 2
-            for(int x = chromosome.size()-1; x >= 0; x--){
-                if(chromosome.get(x).equals(0)){
-                    JsonObject to_remove = array_ref.get(x).getAsJsonObject();
-                    // DesignBuilder.findAndRemoveObject(Integer.parseInt(uid), to_remove, DesignBuilder.object);
-                    array_ref.remove(x);
-                }
+            // --> 2. Populate new_groups object with groups
+            String group_name = operates_on + "-group";
+            if(!this.node_options.equalsIgnoreCase("null")){
+                group_name = this.node_options;
+            }
+            int num_groups = Collections.max(chromosome);
+            for(int x = 1; x <= num_groups; x++){
+                JsonObject group = new JsonObject();
+                group.addProperty("name", group_name + "-" + x);
+                group.addProperty("uid", Integer.toString(x));
+                group.add(operates_on, new JsonArray());
+                new_groups.add(group);
+            }
+
+            // --> 3. Add reference elements back to appropriate groups
+            for(int idx = 0; idx < chromosome.size(); idx++){
+                int group_idx = chromosome.get(idx)-1;
+                JsonObject group = new_groups.get(group_idx).getAsJsonObject();
+                group.get(operates_on).getAsJsonArray().add(array_ref.get(idx).getAsJsonObject());
             }
         }
     }
-
-
-
-
-
 }

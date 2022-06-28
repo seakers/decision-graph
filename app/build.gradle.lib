@@ -1,0 +1,56 @@
+plugins {
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+
+    // AWS
+    implementation platform('software.amazon.awssdk:bom:2.13.13')
+    implementation 'software.amazon.awssdk:sqs'
+    implementation 'software.amazon.awssdk:regions'
+    implementation 'software.amazon.awssdk:auth'
+
+    // Neo4j
+    implementation'org.neo4j.driver:neo4j-java-driver:4.1.1'
+
+    // MOEA
+    implementation 'org.moeaframework:moeaframework:2.12'
+
+    // CSV
+    implementation 'com.opencsv:opencsv:5.2'
+
+    // MATRIX OPERATIONS
+    implementation group: 'org.ejml', name: 'ejml-all', version: '0.40'
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    // Cameo Plugin Library (NOT NEEDED)
+    // implementation fileTree('/home/gapaza/repos/seakers/decision-graph/cameo-lib') { include '*.jar' }
+}
+
+jar {
+    zip64=true
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    baseName = "decision-graph"
+
+    // destinationDirectory.set(file("$rootDir/jars"))
+    destinationDirectory.set(file("/c/Program Files/Cameo Systems Modeler Demo/plugins/adg"))
+    // destinationDirectory.set(file("/c/Users/apaza/repos/seakers/adgplugin/adg"));
+}
+
+
+
+
+
+
+
+
+
+
+

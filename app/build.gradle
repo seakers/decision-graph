@@ -45,6 +45,16 @@ dependencies {
 
     // MATRIX OPERATIONS
     implementation group: 'org.ejml', name: 'ejml-all', version: '0.40'
+
+    // Cameo Plugin Library (NOT NEEDED)
+    // implementation fileTree('/home/gapaza/repos/seakers/decision-graph/cameo-lib') { include '*.jar' }
+}
+
+distTar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+distZip {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 application {

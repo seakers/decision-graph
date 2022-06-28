@@ -1,18 +1,15 @@
 package graph.decisions;
 
-import app.Files;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import graph.Decision;
-import graph.Graph;
 import graph.chromosome.BitString;
 import graph.chromosome.DesignBuilder;
 import org.neo4j.driver.Record;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Assigning extends Decision {
 
@@ -116,7 +113,8 @@ public class Assigning extends Decision {
         // --> Get dependency references
         // --> TODO: Change such that assigning decisions remove the 'from' JsonArrays that are accessed with operates_on
         JsonObject dependency_refs = new JsonObject();
-        DesignBuilder.recursiveJsonSearchAssigning(data_source, operates_on, dependency_refs, is_root, direction.equalsIgnoreCase("FROM"));
+        boolean delete_ref = (!is_root && direction.equalsIgnoreCase("FROM"));
+        DesignBuilder.referenceSearch(data_source, operates_on, dependency_refs, delete_ref);
 
         // --> Copy dependency elements from references
         JsonArray dependency_elements = new JsonArray();
@@ -391,7 +389,6 @@ public class Assigning extends Decision {
         }
     }
 
-
 //     ____          _  _      _   _____               _       _
 //    |  _ \        (_)| |    | | |  __ \             (_)     (_)
 //    | |_) | _   _  _ | |  __| | | |  | |  ___   ___  _  ___  _   ___   _ __
@@ -493,6 +490,18 @@ public class Assigning extends Decision {
 
 
 
-
+//     _____              _                __      __
+//    |  __ \            (_)               \ \    / /
+//    | |  | |  ___  ___  _   __ _  _ __    \ \  / /__ _  _ __  ___
+//    | |  | | / _ \/ __|| | / _` || '_ \    \ \/ // _` || '__|/ __|
+//    | |__| ||  __/\__ \| || (_| || | | |    \  /| (_| || |   \__ \
+//    |_____/  \___||___/|_| \__, ||_| |_|     \/  \__,_||_|   |___/
+//                            __/ |
+//                           |___/
+    @Override
+    public int countDesignVariables(int design_idx){
+        JsonObject design_obj = this.decisions.get(design_idx).getAsJsonObject();
+        return design_obj.getAsJsonArray("chromosome").size();
+    }
 
 }

@@ -1,0 +1,32 @@
+{
+  "decisions": [
+    {
+      "name": "Antenna Assignment",
+      "type": "Assigning"
+    },
+    {
+      "name": "Antenna Partitioning",
+      "type": "Partitioning",
+      "options": "cluster"
+    }
+  ],
+  "edges":[
+    {
+      "parent": "Root",
+      "child": "Antenna Assignment",
+      "operates_on": "constellations",
+      "type": "TO"
+    },
+    {
+      "parent": "Root",
+      "child": "Antenna Assignment",
+      "operates_on": "antennas",
+      "type": "FROM"
+    },
+    {
+      "parent": "Antenna Assignment",
+      "child": "Antenna Partitioning",
+      "operates_on": "antennas"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 package graph.chromosome;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class BitString {
@@ -67,6 +68,50 @@ public class BitString {
         bit_str.set(rand_idx, 1);
         return bit_str;
     }
+
+    public static ArrayList<Integer> getRandomPA(int num_items, int max_groups){
+        Random rand = new Random();
+        ArrayList<Integer> int_str = new ArrayList<>();
+
+        int_str.add(1);
+        int max_sat = rand.nextInt(Math.min(num_items, max_groups)); // Randomly select groups s.t. groups <= max_groups
+        int max_cur = 1;
+        for(int x = 1; x < num_items; x++){
+            int item_group = Math.min(rand.nextInt(max_cur + 1) + 1, max_sat + 1);
+            int_str.add(item_group);
+            if(item_group > max_cur){
+                max_cur = item_group;
+            }
+        }
+
+        return int_str;
+    }
+
+    public static ArrayList<Integer> repairPA(ArrayList<Integer> bit_ary){
+        ArrayList<Integer> repaired = new ArrayList<>();
+
+        HashMap<Integer, Integer> group_map = new HashMap<>();
+        int group_num = 1;
+        for(Integer group: bit_ary){
+            if(group != -1 && !group_map.containsKey(group)){
+                group_map.put(group, group_num);
+                group_num++;
+            }
+        }
+
+        for(Integer group: bit_ary){
+            repaired.add(group_map.get(group));
+        }
+
+        return repaired;
+    }
+
+
+
+
+
+
+
 
 
     public static boolean validate(ArrayList<Integer> bitstring){

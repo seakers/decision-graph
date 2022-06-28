@@ -5,6 +5,23 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+
+/*
+    Data Structure Rules (JsonObject ~ Gson)
+
+    1. Base JsonObject
+    - Contains only key:pair values where:
+        - key: String
+        - Value: JsonArray (containing only type JsonObject)
+
+    2. Nested JsonObject
+    - Contains two String fields: name, id
+    - Every other field points to a JsonArray (containing only type JsonObject)
+
+ */
+
+
+
 public class DesignBuilder {
 
     public static JsonObject object = null;
@@ -66,7 +83,7 @@ public class DesignBuilder {
         }
     }
 
-    public static boolean removeObjectFromParent(JsonObject parent_obj, JsonObject to_remove){
+    private static boolean removeObjectFromParent(JsonObject parent_obj, JsonObject to_remove){
         /*
             - Search through the json object until item is found... then delete it
          */
@@ -86,11 +103,6 @@ public class DesignBuilder {
 
 
 
-
-
-
-
-
 //     _____         __                                        _____                          _
 //    |  __ \       / _|                                      / ____|                        | |
 //    | |__) | ___ | |_  ___  _ __  ___  _ __    ___  ___    | (___    ___   __ _  _ __  ___ | |__
@@ -98,146 +110,90 @@ public class DesignBuilder {
 //    | | \ \|  __/| | |  __/| |  |  __/| | | || (__|  __/    ____) ||  __/| (_| || |  | (__ | | | |
 //    |_|  \_\\___||_|  \___||_|   \___||_| |_| \___|\___|   |_____/  \___| \__,_||_|   \___||_| |_|
 
-    public static void recursiveJsonSearch(JsonElement data_source, String operates_on, JsonObject dependencies){
-        DesignBuilder.recursiveJsonRefSearch(data_source, operates_on, dependencies);
+
+
+    /*
+        If the proper key is found, does not recur further into JsonObject
+     */
+
+    public static void referenceSearch(JsonElement data_source, String operates_on, JsonObject dependencies, boolean delete_ref){
+        DesignBuilder._referenceSearch(data_source, operates_on, dependencies, delete_ref);
     }
-    public static void recursiveJsonRefSearch(JsonElement data_source, String operates_on, JsonObject dependencies){
+    private static void _referenceSearch(JsonElement data_source, String operates_on, JsonObject dependencies, boolean delete_ref){
+
+        // --> If data_source is JsonArray: recursively call search for each JsonObject in array
         if(data_source.isJsonArray()){
             JsonArray json_dependency_ary = data_source.getAsJsonArray();
             for(JsonElement element: json_dependency_ary){
-                DesignBuilder.recursiveJsonRefSearch(element, operates_on, dependencies);
+                DesignBuilder._referenceSearch(element, operates_on, dependencies, delete_ref);
             }
         }
-        else if(data_source.isJsonObject()){
+
+        // --> If data_source is JsonObject: check to see if it contains the search key
+        if(data_source.isJsonObject()){
             JsonObject json_dependency_obj = data_source.getAsJsonObject();
 
-            // --> Try to get element UID
-            String uid = "null";
-            if(json_dependency_obj.has("uid")){
-                uid = json_dependency_obj.get("uid").getAsString();
-            }
-
-            for(String key: json_dependency_obj.keySet()){
-                JsonElement value = json_dependency_obj.get(key);
-                if(key.equalsIgnoreCase(operates_on) && value.isJsonArray()){
-
-                    // --> Check if duplicate UID is present
-                    if(dependencies.keySet().contains(uid)){
-                        System.out.println("--> ERROR: duplicate UIDs when searching for operates on in recursive search");
-                        System.exit(0);
-                    }
-                    dependencies.add(uid, value.getAsJsonArray());
-                }
-                else{
-                    DesignBuilder.recursiveJsonRefSearch(value, operates_on, dependencies);
-                }
-            }
-        }
-    }
-
-
-
-
-
-    public static void recursiveJsonShallowSearch(JsonElement data_source, String operates_on, JsonObject dependencies, JsonArray decision_refs){
-        DesignBuilder.recursiveJsonRefShallowSearch(data_source, operates_on, dependencies, decision_refs);
-    }
-    public static void recursiveJsonRefShallowSearch(JsonElement data_source, String operates_on, JsonObject dependencies, JsonArray decision_refs){
-        if(data_source.isJsonArray()){
-            JsonArray json_dependency_ary = data_source.getAsJsonArray();
-            for(JsonElement element: json_dependency_ary){
-                DesignBuilder.recursiveJsonRefShallowSearch(element, operates_on, dependencies, decision_refs);
-            }
-        }
-        else if(data_source.isJsonObject()){
-            JsonObject json_dependency_obj = data_source.getAsJsonObject();
-
-            // --> Try to get element UID
-            String uid = "null";
-            if(json_dependency_obj.has("uid")){
-                uid = json_dependency_obj.get("uid").getAsString();
-            }
-
-            // --> Check if JsonObject contains desired key
-            if(json_dependency_obj.has(operates_on) && json_dependency_obj.get(operates_on).isJsonArray()){
-                JsonArray value = json_dependency_obj.get(operates_on).getAsJsonArray();
-                // --> Check if duplicate UID is present
-                if(dependencies.keySet().contains(uid)){
-                    System.out.println("--> ERROR: duplicate UIDs when searching for operates on in recursive search");
-                    System.exit(0);
-                }
-                dependencies.add(uid, value.getAsJsonArray());
-                if(!decision_refs.contains(json_dependency_obj)){
-                    decision_refs.add(json_dependency_obj);
-                }
-            }
-            else{
+            if(!json_dependency_obj.keySet().contains(operates_on)){
+                // --> 1. Recursively search object
                 for(String key: json_dependency_obj.keySet()){
-                    JsonElement value = json_dependency_obj.get(key);
-                    DesignBuilder.recursiveJsonRefShallowSearch(value, operates_on, dependencies, decision_refs);
+                    DesignBuilder._referenceSearch(json_dependency_obj.get(key), operates_on, dependencies, delete_ref);
                 }
+            }
+            else {
+
+                // --> 1. Get JsonObject uid
+                String uid = "null";
+                if(json_dependency_obj.has("uid")){
+                    uid = json_dependency_obj.get("uid").getAsString();
+                }
+
+                // --> 2. Get reference object
+                JsonArray reference_object;
+                if(delete_ref){
+                    reference_object = json_dependency_obj.remove(operates_on).getAsJsonArray();
+                }
+                else{
+                    reference_object = json_dependency_obj.getAsJsonArray(operates_on);
+                }
+
+                // --> 3. Add reference object to dependency object
+                dependencies.add(uid, reference_object);
             }
         }
     }
 
 
 
-
-    public static void recursiveJsonSearchAssigning(JsonElement data_source, String operates_on, JsonObject dependencies, boolean is_root, boolean delete_ref){
-        DesignBuilder.recursiveJsonRefSearchAssigning(data_source, operates_on, dependencies, is_root, delete_ref);
+    public static JsonArray parentSearch(JsonElement data_source, String operates_on){
+        JsonArray dependencies = new JsonArray();
+        DesignBuilder._parentSearch(data_source, operates_on, dependencies);
+        return dependencies;
     }
 
-    public static void recursiveJsonRefSearchAssigning(JsonElement data_source, String operates_on, JsonObject dependencies, boolean is_root, boolean delete_ref){
+    private static void _parentSearch(JsonElement data_source, String operates_on, JsonArray dependencies){
 
+        // --> If data_source is JsonArray: recursively call search for each JsonObject in array
         if(data_source.isJsonArray()){
             JsonArray json_dependency_ary = data_source.getAsJsonArray();
             for(JsonElement element: json_dependency_ary){
-                DesignBuilder.recursiveJsonRefSearchAssigning(element, operates_on, dependencies, is_root, delete_ref);
+                DesignBuilder._parentSearch(element, operates_on, dependencies);
             }
         }
-        else if(data_source.isJsonObject()){
+
+        // --> If data_source is JsonObject: check to see if it contains the search key
+        if(data_source.isJsonObject()){
             JsonObject json_dependency_obj = data_source.getAsJsonObject();
 
-            // --> Try to get element UID
-            String uid = "null";
-            if(json_dependency_obj.has("uid")){
-                uid = json_dependency_obj.get("uid").getAsString();
+            if(json_dependency_obj.keySet().contains(operates_on)){
+                dependencies.add(json_dependency_obj);
+
             }
-
-            boolean delete_instruction = false;
-            for(String key: json_dependency_obj.keySet()){
-                JsonElement value = json_dependency_obj.get(key);
-                if(key.equalsIgnoreCase(operates_on) && value.isJsonArray()){
-
-                    // --> Check if duplicate UID is present
-                    if(dependencies.keySet().contains(uid)){
-                        System.out.println("--> ERROR: duplicate UIDs when searching for operates on in recursive search");
-                        System.exit(0);
-                    }
-
-
-                    if(!is_root && delete_ref){
-                        dependencies.add(uid, value.getAsJsonArray().deepCopy());
-                        delete_instruction = true;
-                        // json_dependency_obj.remove(key);
-                    }
-                    else{
-                        dependencies.add(uid, value.getAsJsonArray());
-                    }
+            else {
+                for(String key: json_dependency_obj.keySet()){
+                    DesignBuilder._parentSearch(json_dependency_obj.get(key), operates_on, dependencies);
                 }
-                else{
-                    DesignBuilder.recursiveJsonRefSearchAssigning(value, operates_on, dependencies, is_root, delete_ref);
-                }
-
             }
-
-            if(delete_instruction){
-                json_dependency_obj.remove(operates_on);
-            }
-
-
         }
-
     }
 
 
