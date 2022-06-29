@@ -111,7 +111,7 @@ public class Graph {
             int[] uid = {0};
             this.initInputs(this.inputs, uid);
 
-            String debug_path = Paths.get(Files.debug_dir.toString(), "problem", "inputs.json").toString();
+            String debug_path = Paths.get(Files.debug_dir, "problem", "inputs.json").toString();
             Files.writeDebugFile(debug_path, this.inputs);
 
             this.designs = problem_info.getAsJsonArray("designs").deepCopy();
@@ -311,7 +311,7 @@ public class Graph {
         }
 
         // --> 2. Save design
-        String debug_path = Paths.get(Files.debug_dir.toString(), "designs", "DESIGN-"+this.designs.size()+".json").toString();
+        String debug_path = Paths.get(Files.debug_dir, "designs", "DESIGN-"+this.designs.size()+".json").toString();
         Files.writeDebugFile(debug_path, DesignBuilder.object);
         this.designs.add(DesignBuilder.object.deepCopy());
 

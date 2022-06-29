@@ -94,7 +94,7 @@ public class Decision {
         }
 
         public Builder setDebugDir(String dir_name){
-            this.debug_dir = Paths.get(Files.debug_dir.toString(), dir_name).toString();
+            this.debug_dir = Paths.get(Files.debug_dir, dir_name).toString();
             return this;
         }
 

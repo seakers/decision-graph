@@ -15,7 +15,7 @@ public class Files {
     // ----- Root Directory -----
     // --------------------------
 
-    public static Path root_dir = Paths.get("/decisions");
+    public static String root_dir = Paths.get("/decisions").toString();
     // public static Path root_dir = Paths.get("/home", "gapaza", "repos", "seakers", "decision-graph");
     // public static Path root_dir = Paths.get("C:", "Program Files", "Cameo Systems Modeler Demo", "plugins", "adg");
 
@@ -23,41 +23,40 @@ public class Files {
     // ---------------------------
     // ----- Debug Directory -----
     // ---------------------------
-    public static Path debug_dir = Paths.get(Files.root_dir.toString(), "debug");
+    public static String debug_dir = Paths.get(Files.root_dir, "debug").toString();
 
 
     // ------------------------
     // ----- Formulations -----
     // ------------------------
-
-    public static Path formulation_dir = Paths.get(Files.root_dir.toString(), "formulations");
+    public static String formulation_dir = Paths.get(Files.root_dir, "formulations").toString();
 
     // --> 1. TDRS
-    public static Path tdrs_formulation = Paths.get(Files.formulation_dir.toString(), "TDRS", "graph.json");
-    public static Path tdrs_formulation1 = Paths.get(Files.formulation_dir.toString(), "TDRS", "graph_1.json");
-    public static Path tdrs_formulation2 = Paths.get(Files.formulation_dir.toString(), "TDRS", "graph_2.json");
-    public static Path tdrs_problem = Paths.get(Files.formulation_dir.toString(), "TDRS", "problems", "base.json");
+    public static String tdrs_formulation = Paths.get(Files.formulation_dir, "TDRS", "graph.json").toString();
+    public static String tdrs_formulation1 = Paths.get(Files.formulation_dir, "TDRS", "graph_1.json").toString();
+    public static String tdrs_formulation2 = Paths.get(Files.formulation_dir, "TDRS", "graph_2.json").toString();
+    public static String tdrs_problem = Paths.get(Files.formulation_dir, "TDRS", "problems", "base.json").toString();
 
 
     // --> 2. GNC
-    public static Path gnc_formulation  = Paths.get(Files.formulation_dir.toString(), "GNC", "graph.json");
-    public static Path gnc_formulation1 = Paths.get(Files.formulation_dir.toString(), "GNC", "graph_1.json");
-    public static Path gnc_formulation2 = Paths.get(Files.formulation_dir.toString(), "GNC", "graph_2.json");
-    public static Path gnc_formulation3 = Paths.get(Files.formulation_dir.toString(), "GNC", "graph_3.json");
-    public static Path gnc_problem = Paths.get(Files.formulation_dir.toString(), "GNC", "problems", "base.json");
+    public static String gnc_formulation  = Paths.get(Files.formulation_dir, "GNC", "graph.json").toString();
+    public static String gnc_formulation1 = Paths.get(Files.formulation_dir, "GNC", "graph_1.json").toString();
+    public static String gnc_formulation2 = Paths.get(Files.formulation_dir, "GNC", "graph_2.json").toString();
+    public static String gnc_formulation3 = Paths.get(Files.formulation_dir, "GNC", "graph_3.json").toString();
+    public static String gnc_problem = Paths.get(Files.formulation_dir, "GNC", "problems", "base.json").toString();
 
 
     // --> 3. EOSS
-    public static Path eoss_formulation  = Paths.get(Files.formulation_dir.toString(), "EOSS", "graph.json");
-    public static Path eoss_problem  = Paths.get(Files.formulation_dir.toString(), "EOSS", "problems", "base.json");
+    public static String eoss_formulation  = Paths.get(Files.formulation_dir, "EOSS", "graph.json").toString();
+    public static String eoss_problem  = Paths.get(Files.formulation_dir, "EOSS", "problems", "base.json").toString();
 
 
     // ---------------------------
     // ----- Current Problem -----
     // ---------------------------
 
-    public static Path curr_formulation = Files.tdrs_formulation2;
-    public static Path curr_problem     = Files.tdrs_problem;
+    public static String curr_formulation = Files.tdrs_formulation2;
+    public static String curr_problem     = Files.tdrs_problem;
     
 
 
