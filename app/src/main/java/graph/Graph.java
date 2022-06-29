@@ -18,33 +18,13 @@ public class Graph {
     // -----------------------------
     // ----- SINGLETON PATTERN -----
     // -----------------------------
+    // - Idea is to use Builder class to build static instance
 
     private static Graph instance = new Graph();
 
     public static Graph getInstance() { return instance; }
 
-    public static boolean buildInstance(String uri, String user, String password, String formulation, String problem, boolean reset_nodes, boolean reset_graphs, JsonObject adg_specs){
-
-        // --> 1. Build DatabaseClient
-        DatabaseClient db_client = new DatabaseClient.Builder(uri)
-                .setCredentials(user, password)
-                .setFormulation(formulation)
-                .setProblem(problem)
-                .build();
-        if(!db_client.validateConnection()){
-            return false;
-        }
-
-        // --> 2. Build Graph
-        instance = new Graph.Builder(db_client, formulation, problem, reset_nodes, reset_graphs, adg_specs)
-                .indexGraph()
-                .buildTopologicalOrdering()
-                .projectGraph()
-                .build();
-        return true;
-    }
-
-    public boolean isBuilt = false;
+    public boolean is_built = false;
 
     // ---------------------
     // ----- VARIABLES -----
@@ -88,20 +68,30 @@ public class Graph {
         private JsonArray designs;
 
 
-        public Builder(DatabaseClient client, String formulation, String problem, boolean reset_nodes, boolean reset_graphs, JsonObject adg_specs) {
-            this.client  = client;
+        public Builder(String formulation, String problem, JsonObject adg_specs) {
             this.adg_specs = adg_specs;
             this.problem = problem;
             this.formulation = formulation;
             this.topologicalNodes  = new ArrayList<>();
             this.decisions         = new HashMap<>();
             this.inputs = new JsonObject();
+
+        }
+
+        public Builder buildDatabaseClient(String uri, String user, String password, boolean reset_nodes, boolean reset_graphs){
+
+            this.client = new DatabaseClient.Builder(uri)
+                                .setCredentials(user, password)
+                                .setFormulation(this.formulation)
+                                .setProblem(this.problem)
+                                .build();
             if(reset_nodes){
                 this.client.obliterateNodes();
             }
             if(reset_graphs){
                 this.client.obliterateGraphs();
             }
+            return this;
         }
 
         public Builder indexGraph(){
@@ -257,7 +247,7 @@ public class Graph {
             build.designs           = this.designs;
             build.problem           = problem;
             build.formulation       = formulation;
-            build.isBuilt           = true;
+            build.is_built = true;
 
             // --> Set graph for each decision node
             for(Decision node: this.decisions.values()){
@@ -265,6 +255,7 @@ public class Graph {
             }
 
             // --> Finally return graph object
+            Graph.instance = build;
             return build;
         }
     }
@@ -371,6 +362,7 @@ public class Graph {
 //                                                                                  |___/
 
     public int crossoverDesigns(int papa, int mama, double mutation_probability) throws Exception{
+        System.out.println("--> CROSSING OVER DESIGNS: " + papa + " " + mama);
 
         for(Record node: this.topologicalNodes){
             String node_name = Graph.getNodeName(node);

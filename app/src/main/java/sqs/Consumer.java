@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import graph.Graph;
 import graph.neo4j.DatabaseClient;
+import moea.AdgMoea;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsClient;
@@ -64,7 +65,8 @@ public class Consumer implements Runnable{
         private Graph buildGraph() throws Exception{
             DatabaseClient client = this.buildNeo4jClient();
 
-            return new Graph.Builder(client, this.env.get("formulation"), this.env.get("problem"), true, true, this.getAdgSpecs())
+            return new Graph.Builder(this.env.get("formulation"), this.env.get("problem"), this.getAdgSpecs())
+                    .buildDatabaseClient(this.env.get("uri"), this.env.get("user"), this.env.get("password"), true, true)
                     .indexGraph()
                     .buildTopologicalOrdering()
                     .projectGraph()
@@ -80,12 +82,37 @@ public class Consumer implements Runnable{
         }
     }
 
-
-
     public void run(){
         System.out.println("--> RUNNING CONSUMER");
 
+        // this.testCrossover();
+        this.testMoea();
 
+
+
+        while(this.running){
+            this.running = false;
+        }
+    }
+
+    public void testMoea(){
+
+        AdgMoea moea = new AdgMoea.Builder(this.graph)
+                .setProperties(30, 1.0, 0.05, 2)
+                .buildPopulaiton(20)
+                .build();
+        try {
+            Thread moea_thread = new Thread(moea);
+            moea_thread.start();
+            moea_thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void testCrossover(){
         try{
             int d1 = this.graph.generateRandomDesign();
             int d2 = this.graph.generateRandomDesign();
@@ -97,9 +124,9 @@ public class Consumer implements Runnable{
             ex.printStackTrace();
         }
 
-
-        while(this.running){
-            this.running = false;
-        }
     }
+
+
+
+
 }
