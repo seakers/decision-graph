@@ -30,14 +30,16 @@ public class Consumer implements Runnable{
 
         public Builder(HashMap<String, String> env){
             this.env = env;
-            this.sqsClient = SqsClient.builder()
-                    .region(Region.US_EAST_2)
-                    .endpointOverride(URI.create(env.get("localstackEndpoint")))
-                    .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
-                    .build();
+            this.sqsClient = null;
+//            this.sqsClient = SqsClient.builder()
+//                    .region(Region.US_EAST_2)
+//                    .endpointOverride(URI.create(env.get("localstackEndpoint")))
+//                    .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
+//                    .build();
         }
 
         private DatabaseClient buildNeo4jClient(){
+
             return new DatabaseClient.Builder(this.env.get("uri"))
                     .setCredentials(this.env.get("user"), this.env.get("password"))
                     .setFormulation(this.env.get("formulation"))
