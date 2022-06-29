@@ -31,9 +31,9 @@ public class App {
         String vassar_queue_url   = System.getenv("VASSAR_QUEUE");
 
         // --> 2. Override variables as necessary
-//        uri = "neo4j://localhost:7687";
-//        user = "neo4j";
-//        password = "test";
+        uri = "neo4j://localhost:7687";
+        user = "neo4j";
+        password = "test";
 
 
         formulation = "EOSS";

@@ -5,6 +5,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.nio.file.Paths;
+
 
 /*
     Data Structure Rules (JsonObject ~ Gson)
@@ -28,7 +30,7 @@ public class DesignBuilder {
 
     public static int snapshot_count = 0;
     public static void takeSnapshot(){
-        String file_name = "/decisions/debug/designs/stages/SNAPSHOT-" + DesignBuilder.snapshot_count + ".json";
+        String file_name = Paths.get(Files.debug_dir, "designs", "stages", "SNAPSHOT-" + DesignBuilder.snapshot_count + ".json").toString();
         Files.writeDebugFile(file_name, DesignBuilder.object.deepCopy());
         DesignBuilder.snapshot_count++;
     }

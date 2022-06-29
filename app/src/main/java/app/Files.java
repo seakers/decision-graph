@@ -15,10 +15,10 @@ public class Files {
     // ----- Root Directory -----
     // --------------------------
 
-    public static String root_dir = Paths.get("/decisions").toString();
-    // public static Path root_dir = Paths.get("/home", "gapaza", "repos", "seakers", "decision-graph");
-    // public static Path root_dir = Paths.get("C:", "Program Files", "Cameo Systems Modeler Demo", "plugins", "adg");
-    // public static Path root_dir = Paths.get("C:", "Users", "apaza", "repos", "seakers", "decision-graph");
+    // public static String root_dir = Paths.get("/decisions").toString();
+    // public static String root_dir = Paths.get("/home", "gapaza", "repos", "seakers", "decision-graph").toString();
+    // public static String root_dir = Paths.get("C:", "Program Files", "Cameo Systems Modeler Demo", "plugins", "adg").toString();
+    public static String root_dir = Paths.get("C:", "Users", "apaza", "repos", "seakers", "decision-graph").toString();
 
 
     // ---------------------------
