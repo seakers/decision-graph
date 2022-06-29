@@ -49,8 +49,8 @@ public class Consumer implements Runnable{
         private JsonObject getAdgSpecs() throws Exception{
             JsonObject adg_specs = new JsonObject();
 
-            String graph_file   = Files.curr_formulation;
-            String problem_file = Files.curr_problem;
+            String graph_file   = Files.curr_formulation.toString();
+            String problem_file = Files.curr_problem.toString();
 
             Gson gson_client = new Gson();
             JsonObject graph_object = gson_client.fromJson(new FileReader(graph_file), JsonObject.class);

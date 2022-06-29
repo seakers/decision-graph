@@ -541,40 +541,6 @@ public class DatabaseClient {
 
 
     // --> TODO: Make this a generic function that creates the graph based on a graph.json file and the problem from problem.json
-    public void indexFormulation(){
-        String graph_file   = Files.curr_formulation;
-        String problem_file = Files.curr_problem;
-
-
-
-        try (Session session1 = this.driver.session()){
-            JsonObject graph_object = this.gson.fromJson(new FileReader(graph_file), JsonObject.class);
-            JsonObject problem_object = this.gson.fromJson(new FileReader(problem_file), JsonObject.class);
-
-
-            // --> 1. Create Neo4j problem JsonObject
-            JsonObject problem_obj = new JsonObject();
-            problem_obj.add("inputs", problem_object);
-            problem_obj.add("designs", new JsonArray());
-
-            // --> 2. Add specific problem to object containing problems
-            JsonObject formulation_problems = new JsonObject();
-            formulation_problems.add(this.problem, problem_obj);
-            String root_problems = this.gson.toJson(formulation_problems);
-
-
-
-            // --> 3. Index nodes
-            this.indexNodes(session1, graph_object, root_problems);
-
-            // --> 4. Index edges
-            this.indexEdges(session1, graph_object);
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-    }
-
     private void indexNodes(Session session1, JsonObject graph_object, String root_problems) throws Exception{
 
         // --> 1. Create root node

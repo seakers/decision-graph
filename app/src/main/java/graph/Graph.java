@@ -10,6 +10,7 @@ import graph.decisions.*;
 import graph.neo4j.DatabaseClient;
 import org.neo4j.driver.Record;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -110,8 +111,8 @@ public class Graph {
             int[] uid = {0};
             this.initInputs(this.inputs, uid);
 
-            // Files.writeDebugFile(Files.debug_dir + "\\problem\\inputs.json", this.inputs); // WINDOWS
-            Files.writeDebugFile(Files.debug_dir + "/problem/inputs.json", this.inputs); // LINUX
+            String debug_path = Paths.get(Files.debug_dir.toString(), "problem", "inputs.json").toString();
+            Files.writeDebugFile(debug_path, this.inputs);
 
             this.designs = problem_info.getAsJsonArray("designs").deepCopy();
             return this;
@@ -171,7 +172,7 @@ public class Graph {
             if(node_name.equalsIgnoreCase("Root") && node_type.equalsIgnoreCase("Root")){
                 this.root = new Root.Builder(node)
                         .setDatabaseClient(this.client)
-                        .setDebugDir(Files.debug_dir + "/root/") // WINDOWS: Replace / with \\
+                        .setDebugDir("root")
                         .setChildren()
                         .build();
                 this.decisions.put(node_name, this.root);
@@ -181,7 +182,7 @@ public class Graph {
                 if(node_type.equals("Assigning")){
                     selection = new Assigning.Builder(node)
                             .setDatabaseClient(this.client)
-                            .setDebugDir(Files.debug_dir + "/assigning/")
+                            .setDebugDir("assigning")
                             .setParents(this.decisions)
                             .setChildren()
                             .setDecisions()
@@ -190,7 +191,7 @@ public class Graph {
                 else if(node_type.equals("DownSelecting")){
                     selection = new DownSelecting.Builder(node)
                             .setDatabaseClient(this.client)
-                            .setDebugDir(Files.debug_dir + "/downselecting/")
+                            .setDebugDir("downselecting")
                             .setParents(this.decisions)
                             .setChildren()
                             .setDecisions()
@@ -199,7 +200,7 @@ public class Graph {
                 else if(node_type.equals("StandardForm")){
                     selection = new StandardForm.Builder(node)
                             .setDatabaseClient(this.client)
-                            .setDebugDir(Files.debug_dir + "/standardform/")
+                            .setDebugDir("standardform")
                             .setParents(this.decisions)
                             .setChildren()
                             .setDecisions()
@@ -208,7 +209,7 @@ public class Graph {
                 else if(node_type.equals("Partitioning")){
                     selection = new Partitioning.Builder(node)
                             .setDatabaseClient(this.client)
-                            .setDebugDir(Files.debug_dir + "/partitioning/")
+                            .setDebugDir("partitioning")
                             .setParents(this.decisions)
                             .setChildren()
                             .setDecisions()
@@ -224,7 +225,6 @@ public class Graph {
             }
 
             this.printDecisions();
-
             return this;
         }
 
@@ -311,9 +311,9 @@ public class Graph {
         }
 
         // --> 2. Save design
-        Files.writeDebugFile(Files.debug_dir + "/designs/DESIGN-"+this.designs.size()+".json", DesignBuilder.object);
+        String debug_path = Paths.get(Files.debug_dir.toString(), "designs", "DESIGN-"+this.designs.size()+".json").toString();
+        Files.writeDebugFile(debug_path, DesignBuilder.object);
         this.designs.add(DesignBuilder.object.deepCopy());
-
 
         // --> 3. Reset design builder
         DesignBuilder.reset();

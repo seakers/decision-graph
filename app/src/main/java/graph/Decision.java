@@ -14,6 +14,7 @@ import graph.chromosome.DesignBuilder;
 import graph.neo4j.DatabaseClient;
 import org.neo4j.driver.Record;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -92,8 +93,8 @@ public class Decision {
             return this;
         }
 
-        public Builder setDebugDir(String debug_dir){
-            this.debug_dir = debug_dir;
+        public Builder setDebugDir(String dir_name){
+            this.debug_dir = Paths.get(Files.debug_dir.toString(), dir_name).toString();
             return this;
         }
 
@@ -156,21 +157,24 @@ public class Decision {
 
 
     protected void writeRandomDebugFile(JsonElement to_write, String file_name){
-        this.writeDebugFile(to_write, "random/" + file_name);
+        String write_path = Paths.get(this.debug_dir, "random", file_name).toString();
+        this.writeDebugFile(to_write, write_path);
     }
     protected void writeCrossoverDebugFile(JsonElement to_write, String file_name){
-        this.writeDebugFile(to_write, "crossover/" + file_name);
+        String write_path = Paths.get(this.debug_dir, "crossover", file_name).toString();
+        this.writeDebugFile(to_write, write_path);
     }
     protected void writeEnumerationDebugFile(JsonElement to_write, String file_name){
-        this.writeDebugFile(to_write, "enumeration/" + file_name);
+        String write_path = Paths.get(this.debug_dir, "enumeration", file_name).toString();
+        this.writeDebugFile(to_write, write_path);
     }
 
     protected void writeDebugFile(JsonElement to_write, String file_name){
         if(to_write.isJsonObject()){
-            Files.writeDebugFile(this.debug_dir+file_name, to_write.getAsJsonObject());
+            Files.writeDebugFile(file_name, to_write.getAsJsonObject());
         }
         else if(to_write.isJsonArray()){
-            Files.writeDebugFile(this.debug_dir+file_name, to_write.getAsJsonArray());
+            Files.writeDebugFile(file_name, to_write.getAsJsonArray());
         }
         else{
             System.out.println("--> COULD NOT WRITE DECISION DEBUG FILE");
