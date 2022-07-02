@@ -311,8 +311,8 @@ public class Graph {
         }
 
         // --> 2. Save design
-        String debug_path = Paths.get(Files.debug_dir, "designs", "DESIGN-"+this.designs.size()+".json").toString();
-        Files.writeDebugFile(debug_path, DesignBuilder.object);
+        // String debug_path = Paths.get(Files.debug_dir, "designs", "DESIGN-"+this.designs.size()+".json").toString();
+        // Files.writeDebugFile(debug_path, DesignBuilder.object);
         this.designs.add(DesignBuilder.object.deepCopy());
 
         // --> 3. Reset design builder
@@ -400,6 +400,20 @@ public class Graph {
 //    |_____/  \___||___/|_| \__, ||_| |_|     \/  \__,_||_|   |___/
 //                            __/ |
 //                           |___/
+
+    public JsonObject getDesign(int design_idx){
+
+        JsonElement design = this.designs.get(design_idx).deepCopy();
+        if(!design.isJsonObject()){
+            System.out.println("--> ERROR: Design is not JsonObject type");
+        }
+        return design.getAsJsonObject();
+    }
+
+    public JsonObject getDesignDecision(int design_idx, String decision_name){
+        return this.decisions.get(decision_name).decisions.get(design_idx).getAsJsonObject();
+    }
+
 
     public int countDesignVariables(int design_idx){
         int count = 0;

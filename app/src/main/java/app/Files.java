@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.moeaframework.core.NondominatedPopulation;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,10 +17,10 @@ public class Files {
     // ----- Root Directory -----
     // --------------------------
 
-    // public static String root_dir = Paths.get("/decisions").toString();
+    public static String root_dir = Paths.get("/decisions").toString();
     // public static String root_dir = Paths.get("/home", "gapaza", "repos", "seakers", "decision-graph").toString();
     // public static String root_dir = Paths.get("C:", "Program Files", "Cameo Systems Modeler Demo", "plugins", "adg").toString();
-    public static String root_dir = Paths.get("C:", "Users", "apaza", "repos", "seakers", "decision-graph").toString();
+    // public static String root_dir = Paths.get("C:", "Users", "apaza", "repos", "seakers", "decision-graph").toString();
 
 
     // ---------------------------
@@ -26,6 +28,14 @@ public class Files {
     // ---------------------------
     public static String debug_dir = Paths.get(Files.root_dir, "debug").toString();
 
+    // -----------------------------
+    // ----- Results Directory -----
+    // -----------------------------
+    public static String results_dir = Paths.get(Files.root_dir, "results").toString();
+
+    public static String tdrs_results = Paths.get(Files.results_dir, "TDRS").toString();
+    public static String gnc_results = Paths.get(Files.results_dir, "GNC").toString();
+    public static String eoss_results = Paths.get(Files.results_dir, "EOSS").toString();
 
     // ------------------------
     // ----- Formulations -----
@@ -58,8 +68,19 @@ public class Files {
 
     public static String curr_formulation = Files.tdrs_formulation2;
     public static String curr_problem     = Files.tdrs_problem;
+    public static String curr_results     = Files.tdrs_results;
     
 
+
+
+
+
+    public static void createDir(String path){
+        File directory = new File(path);
+        if (!directory.exists()){
+            directory.mkdirs();
+        }
+    }
 
 
 

@@ -1,17 +1,15 @@
 package sqs;
 
 import app.Files;
+import app.Runs;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import graph.Graph;
 import graph.neo4j.DatabaseClient;
-import moea.AdgMoea;
-import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
+import moea.adg.AdgMoea;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
 import java.io.FileReader;
-import java.net.URI;
 import java.util.HashMap;
 
 public class Consumer implements Runnable{
@@ -38,16 +36,6 @@ public class Consumer implements Runnable{
 //                    .build();
         }
 
-        private DatabaseClient buildNeo4jClient(){
-
-            return new DatabaseClient.Builder(this.env.get("uri"))
-                    .setCredentials(this.env.get("user"), this.env.get("password"))
-                    .setFormulation(this.env.get("formulation"))
-                    .setProblem(this.env.get("problem"))
-                    .build();
-        }
-
-
         private JsonObject getAdgSpecs() throws Exception{
             JsonObject adg_specs = new JsonObject();
 
@@ -65,7 +53,6 @@ public class Consumer implements Runnable{
         }
 
         private Graph buildGraph() throws Exception{
-            DatabaseClient client = this.buildNeo4jClient();
 
             return new Graph.Builder(this.env.get("formulation"), this.env.get("problem"), this.getAdgSpecs())
                     .buildDatabaseClient(this.env.get("uri"), this.env.get("user"), this.env.get("password"), true, true)
@@ -88,7 +75,7 @@ public class Consumer implements Runnable{
         System.out.println("--> RUNNING CONSUMER");
 
         // this.testCrossover();
-        this.testMoea();
+        this.runMoea();
 
 
 
@@ -97,11 +84,19 @@ public class Consumer implements Runnable{
         }
     }
 
-    public void testMoea(){
+
+
+
+
+
+    public void runMoea(){
+        int pop_size = Runs.pop_size;
+        int nfe = Runs.nfe;
+        int num_objectives = 2;
 
         AdgMoea moea = new AdgMoea.Builder(this.graph)
-                .setProperties(30, 1.0, 0.05, 2)
-                .buildPopulaiton(20)
+                .setProperties(nfe, 1.0, 0.05, num_objectives)
+                .buildPopulaiton(pop_size)
                 .build();
         try {
             Thread moea_thread = new Thread(moea);

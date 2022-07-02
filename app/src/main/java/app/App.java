@@ -21,33 +21,25 @@ public class App {
 
 
         // --> 1. Get environment variables
-        String localstackEndpoint = System.getenv("AWS_STACK_ENDPOINT");
         String uri                = System.getenv("NEO4J_URI");
         String user               = System.getenv("NEO4J_USER");
         String password           = System.getenv("NEO4J_PASSWORD");
         String problem            = System.getenv("PROBLEM");
         String formulation        = System.getenv("FORMULATION");
-        String eval_queue         = Utils.getSaltString(15);
-        String vassar_queue_url   = System.getenv("VASSAR_QUEUE");
 
         // --> 2. Override variables as necessary
-        uri = "neo4j://localhost:7687";
+        // uri = "neo4j://localhost:7687";
+        uri = "neo4j://neo4j:7687";
         user = "neo4j";
         password = "test";
-
-
-        formulation = "EOSS";
         formulation = "TDRS";
         problem     = "SMAP";
 
         // --> 3. Place variables into hashmap
         HashMap<String, String> env = new HashMap<>();
-        env.put("localstackEndpoint", localstackEndpoint);
         env.put("uri", uri);
         env.put("user", user);
         env.put("password", password);
-        env.put("eval_queue", eval_queue);
-        env.put("vassar_queue_url", vassar_queue_url);
         env.put("problem", problem);
         env.put("formulation", formulation);
         env.put("mutation_type", "DISJOINT");
@@ -58,14 +50,18 @@ public class App {
 //    | |     / _ \ | '_ \ / __|| | | || '_ ` _ \  / _ \| '__|
 //    | |____| (_) || | | |\__ \| |_| || | | | | ||  __/| |
 //     \_____|\___/ |_| |_||___/ \__,_||_| |_| |_| \___||_|
+        int num_runs = Runs.num_runs;
 
+        Runs.createRunGroup();
 
         try {
-            // --> 1. Build consumer
-            Consumer consumer = new Consumer.Builder(env).build();
+            for(int x = 0; x < num_runs; x++){
+                // --> 1. Build consumer
+                Consumer consumer = new Consumer.Builder(env).build();
 
-            // --> 2. Run Consumer
-            consumer.run();
+                // --> 2. Run Consumer
+                consumer.run();
+            }
         }
         catch (Exception ex) {
             ex.printStackTrace();

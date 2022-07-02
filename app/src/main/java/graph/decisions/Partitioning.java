@@ -306,6 +306,9 @@ public class Partitioning extends Decision {
             if(mama_groups < papa_groups){
                 max_groups = mama_groups;
             }
+            if(max_groups < 1){
+                max_groups = rand.nextInt(chromosome.size()) + 1;
+            }
 
             for(int x = 0; x < chromosome.size(); x++) {
                 int papa_bit = papa_info.get(x);
