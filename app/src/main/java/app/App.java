@@ -3,6 +3,7 @@ package app;
 import sqs.Consumer;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public class App {
     public String getGreeting() {
@@ -10,6 +11,16 @@ public class App {
     }
 
     public static void main(String[] args) {
+
+        // Wait for Neo4j to boot
+        try{
+            System.out.println("--> WAITING FOR NEO4J BOOT");
+            TimeUnit.SECONDS.sleep(10);
+            System.out.println("--> FINISHED WAITING");
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
 
 
 //     ______               _                                             _
@@ -32,8 +43,8 @@ public class App {
         uri = "neo4j://neo4j:7687";
         user = "neo4j";
         password = "test";
-        formulation = "TDRS";
-        problem     = "SMAP";
+//        formulation = "TDRS";
+//        problem     = "SMAP";
 
         // --> 3. Place variables into hashmap
         HashMap<String, String> env = new HashMap<>();

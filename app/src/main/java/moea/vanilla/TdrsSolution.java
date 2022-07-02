@@ -90,7 +90,7 @@ public class TdrsSolution extends Solution {
         if(!sat_exists){
             // --> If no sats, set evaluated and
             this.setObjective(0, 0);     // Benefit
-            this.setObjective(1, 29000); // Cost
+            this.setObjective(1, 19000); // Cost
             this.already_evaluated = true;
         }
         System.out.println("--> FINISHED VERIFYING DESIGN: " + this.design);

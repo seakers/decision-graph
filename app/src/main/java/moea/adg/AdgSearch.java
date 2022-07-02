@@ -33,7 +33,7 @@ public class AdgSearch  implements Callable<Algorithm> {
         this.analyzer = new Analyzer()
                 .withProblem(this.alg.getProblem())
                 .withIdealPoint(-1.1, -0.1)
-                .withReferencePoint(0, 30000)
+                .withReferencePoint(0, 20000)
                 .includeHypervolume()
                 .includeAdditiveEpsilonIndicator();
         this.accumulator = new Accumulator();

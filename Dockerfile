@@ -26,3 +26,5 @@ ENV PATH="/installs/gradle-7.4/bin:${PATH}"
 # -- WORKING DIRECTORY --
 WORKDIR /decisions
 
+COPY settings.gradle /decisions/
+

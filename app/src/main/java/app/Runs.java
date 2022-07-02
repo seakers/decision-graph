@@ -23,17 +23,17 @@ public class Runs {
     /*
         Run Specifications
      */
-    // public static int num_runs = Integer.parseInt(System.getenv("NUM_RUNS");
-    public static int num_runs = 20;
+    public static int num_runs = Integer.parseInt(System.getenv("NUM_RUNS"));
+    // public static int num_runs = 20;
 
-    // public static int nfe = Integer.parseInt(System.getenv("NFE");
-    public static int nfe = 250;
+    public static int nfe = Integer.parseInt(System.getenv("NFE"));
+    // public static int nfe = 250;
 
-    // public static int pop_size = Integer.parseInt(System.getenv("POP_SIZE");
-    public static int pop_size = 30;
+    public static int pop_size = Integer.parseInt(System.getenv("POP_SIZE"));
+    // public static int pop_size = 30;
 
-    // public static String type = System.getenv("RUN_TYPE"); // ADG | VANILLA
-    public static String type = "VANILLA"; // ADG | VANILLA
+    public static String type = System.getenv("RUN_TYPE"); // ADG | VANILLA
+    // public static String type = "VANILLA"; // ADG | VANILLA
 
 
 
@@ -42,6 +42,8 @@ public class Runs {
 
     public static void createRunGroup(){
         String results_path = Files.curr_results;
+        System.out.println(results_path);
+        Files.createDir(results_path);
         int group_num = new File(results_path).list().length;
         // String group_dir_name = "group_" + group_num;
         String group_dir_name = System.getenv("RUN_GROUP");
