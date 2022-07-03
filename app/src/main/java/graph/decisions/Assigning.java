@@ -186,7 +186,7 @@ public class Assigning extends Decision {
         // --> 2. Generate random bit string (add to dependencies)
         int chromosome_length = assign_from.size() * assign_to.size();
         ArrayList<Integer> chromosome = BitString.getRandom(chromosome_length);
-        chromosome = BitString.constraint_minAssignation(chromosome, assign_to.size(), assign_from.size());
+        // chromosome = BitString.constraint_minAssignation(chromosome, assign_to.size(), assign_from.size());
         dependencies.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray());
 
         // --> 3. Build decision
