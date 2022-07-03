@@ -368,25 +368,28 @@ public class Assigning extends Decision {
 
     @Override
     public void mutateChromosome(JsonObject decision, double probability){
-        if(Decision.getProbabilityResult(probability)){
-            ArrayList<Integer> chromosome = this.gson.fromJson(decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
-            decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+        double prob_bit_flip = 1.0 / 18.0;
 
-            // --> 1. Get a random bit index to flip
-            int rand_idx = this.rand.nextInt(chromosome.size());
-            if(chromosome.get(rand_idx) == 0){
-                chromosome.set(rand_idx, 1);
-            }
-            else if(chromosome.get(rand_idx) == 1){
-                chromosome.set(rand_idx, 0);
-            }
-            else{
-                System.out.println("--> ERROR: chromosome element to mutate not in proper form (assigning)");
-                System.exit(0);
-            }
+        ArrayList<Integer> chromosome = this.gson.fromJson(decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+        decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
 
-            decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+        // --> 1. Some probability to mutate each bit
+        for(int x = 0; x < chromosome.size(); x++){
+            if(Decision.getProbabilityResult(prob_bit_flip)){
+                if(chromosome.get(x) == 0){
+                    chromosome.set(x, 1);
+                }
+                else if(chromosome.get(x) == 1){
+                    chromosome.set(x, 0);
+                }
+                else{
+                    System.out.println("--> ERROR: chromosome element to mutate not in proper form (assigning)");
+                    System.exit(0);
+                }
+            }
         }
+
+        decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
     }
 
 //     ____          _  _      _   _____               _       _
@@ -488,6 +491,21 @@ public class Assigning extends Decision {
         }
     }
 
+
+//     _____                      _
+//    |  __ \                    (_)
+//    | |__) | ___  _ __    __ _  _  _ __
+//    |  _  / / _ \| '_ \  / _` || || '__|
+//    | | \ \|  __/| |_) || (_| || || |
+//    |_|  \_\\___|| .__/  \__,_||_||_|
+//                 | |
+//                 |_|
+
+    public void repairChromosome(ArrayList<Integer> chromosome){
+        if(!chromosome.contains(1)){
+            chromosome.set(this.rand.nextInt(chromosome.size()), 1);
+        }
+    }
 
 
 //     _____              _                __      __

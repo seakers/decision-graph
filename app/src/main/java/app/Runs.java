@@ -44,9 +44,12 @@ public class Runs {
         String results_path = Files.curr_results;
         System.out.println(results_path);
         Files.createDir(results_path);
+
+        // RUNGROUP CHANGE
         int group_num = new File(results_path).list().length;
         // String group_dir_name = "group_" + group_num;
         String group_dir_name = System.getenv("RUN_GROUP");
+
         Runs.group_path = Paths.get(results_path, group_dir_name).toString();
         Runs.group_run_path = Paths.get(Runs.group_path, "runs").toString();
         Files.createDir(Runs.group_path);

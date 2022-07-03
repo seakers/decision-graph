@@ -347,8 +347,24 @@ public class Partitioning extends Decision {
 
     @Override
     public void mutateChromosome(JsonObject decision, double probability){
-        if(Decision.getProbabilityResult(probability)){
+        double prob_bit_flip = 1.0 / 18.0;
 
+        for(String key: decision.keySet()){
+            JsonObject decision_component = decision.get(key).getAsJsonObject();
+            ArrayList<Integer> chromosome = this.gson.fromJson(decision_component.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+            decision_component.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+            int max_possible_groups = chromosome.size();
+
+            // --> Mutate and repair
+            for(int x = 0; x < chromosome.size(); x++) {
+                if (Decision.getProbabilityResult(prob_bit_flip)) {
+                    int rand_group = this.rand.nextInt(max_possible_groups) + 1;
+                    chromosome.set(x, rand_group);
+                }
+            }
+            ArrayList<Integer> repaired_chromosome = BitString.repairPA(chromosome);
+
+            decision_component.add("chromosome", this.gson.toJsonTree(repaired_chromosome).getAsJsonArray().deepCopy());
         }
     }
 
