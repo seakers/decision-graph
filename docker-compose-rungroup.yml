@@ -20,24 +20,13 @@ services:
     build: .
     image: add_server:alpha
     volumes:
-      - type: bind
-        source: ./app
-        target: /decisions/app
-      - type: bind
-        source: ./jars
-        target: /decisions/jars
-      - type: bind
-        source: ./debug
-        target: /decisions/debug
-      - type: bind
-        source: ./formulations
-        target: /decisions/formulations
-      - type: bind
-        source: ./results
-        target: /decisions/results
-      - type: bind
-        source: /c/Users/apaza/repos/gabe/itaca/.
-        target: /itaca
+      - ./app:/decisions/app
+      - ./jars:/decisions/jars
+      - ./debug:/decisions/debug
+      - ./formulations:/decisions/formulations
+      - ./results:/decisions/results
+#      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
+      - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
     env_file: grouprun.env
@@ -52,24 +41,13 @@ services:
     build: .
     image: add_server:alpha
     volumes:
-      - type: bind
-        source: ./app
-        target: /decisions/app
-      - type: bind
-        source: ./jars
-        target: /decisions/jars
-      - type: bind
-        source: ./debug
-        target: /decisions/debug
-      - type: bind
-        source: ./formulations
-        target: /decisions/formulations
-      - type: bind
-        source: ./results
-        target: /decisions/results
-      - type: bind
-        source: /c/Users/apaza/repos/gabe/itaca/.
-        target: /itaca
+      - ./app:/decisions/app
+      - ./jars:/decisions/jars
+      - ./debug:/decisions/debug
+      - ./formulations:/decisions/formulations
+      - ./results:/decisions/results
+#      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
+      - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
     env_file: grouprun.env
