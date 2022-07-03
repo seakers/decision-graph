@@ -355,7 +355,7 @@ services:
       - PROBLEM=TDRS17
       - FORMULATION=TDRS17
       - RUN_NUMBER=17
-    container_name: add_engine_10
+    container_name: add_engine_17
     entrypoint: [ "gradle", "run" ]
   add_engine_18:
     build: .
