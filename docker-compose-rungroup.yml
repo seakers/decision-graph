@@ -57,3 +57,164 @@ services:
       - RUN_NUMBER=2
     container_name: add_engine_2
     entrypoint: ["gradle", "run"]
+  add_engine_3:
+    build: .
+    image: add_server:alpha
+    volumes:
+      - ./app:/decisions/app
+      - ./jars:/decisions/jars
+      - ./debug:/decisions/debug
+      - ./formulations:/decisions/formulations
+      - ./results:/decisions/results
+      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
+      - /home/ec2-user/repos/itaca/.:/itaca
+    depends_on:
+      - neo4j
+    env_file: grouprun.env
+    environment:
+      - PROBLEM=TDRS3
+      - FORMULATION=TDRS3
+      - RUN_NUMBER=3
+    container_name: add_engine_3
+    entrypoint: ["gradle", "run"]
+  add_engine_4:
+    build: .
+    image: add_server:alpha
+    volumes:
+      - ./app:/decisions/app
+      - ./jars:/decisions/jars
+      - ./debug:/decisions/debug
+      - ./formulations:/decisions/formulations
+      - ./results:/decisions/results
+      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
+      - /home/ec2-user/repos/itaca/.:/itaca
+    depends_on:
+      - neo4j
+    env_file: grouprun.env
+    environment:
+      - PROBLEM=TDRS4
+      - FORMULATION=TDRS4
+      - RUN_NUMBER=4
+    container_name: add_engine_4
+    entrypoint: ["gradle", "run"]
+  add_engine_5:
+    build: .
+    image: add_server:alpha
+    volumes:
+      - ./app:/decisions/app
+      - ./jars:/decisions/jars
+      - ./debug:/decisions/debug
+      - ./formulations:/decisions/formulations
+      - ./results:/decisions/results
+      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
+      - /home/ec2-user/repos/itaca/.:/itaca
+    depends_on:
+      - neo4j
+    env_file: grouprun.env
+    environment:
+      - PROBLEM=TDRS5
+      - FORMULATION=TDRS5
+      - RUN_NUMBER=5
+    container_name: add_engine_5
+    entrypoint: ["gradle", "run"]
+  add_engine_6:
+    build: .
+    image: add_server:alpha
+    volumes:
+      - ./app:/decisions/app
+      - ./jars:/decisions/jars
+      - ./debug:/decisions/debug
+      - ./formulations:/decisions/formulations
+      - ./results:/decisions/results
+      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
+      - /home/ec2-user/repos/itaca/.:/itaca
+    depends_on:
+      - neo4j
+    env_file: grouprun.env
+    environment:
+      - PROBLEM=TDRS6
+      - FORMULATION=TDRS6
+      - RUN_NUMBER=6
+    container_name: add_engine_6
+    entrypoint: ["gradle", "run"]
+  add_engine_7:
+    build: .
+    image: add_server:alpha
+    volumes:
+      - ./app:/decisions/app
+      - ./jars:/decisions/jars
+      - ./debug:/decisions/debug
+      - ./formulations:/decisions/formulations
+      - ./results:/decisions/results
+      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
+      - /home/ec2-user/repos/itaca/.:/itaca
+    depends_on:
+      - neo4j
+    env_file: grouprun.env
+    environment:
+      - PROBLEM=TDRS7
+      - FORMULATION=TDRS7
+      - RUN_NUMBER=7
+    container_name: add_engine_7
+    entrypoint: ["gradle", "run"]
+  add_engine_8:
+    build: .
+    image: add_server:alpha
+    volumes:
+      - ./app:/decisions/app
+      - ./jars:/decisions/jars
+      - ./debug:/decisions/debug
+      - ./formulations:/decisions/formulations
+      - ./results:/decisions/results
+      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
+      - /home/ec2-user/repos/itaca/.:/itaca
+    depends_on:
+      - neo4j
+    env_file: grouprun.env
+    environment:
+      - PROBLEM=TDRS8
+      - FORMULATION=TDRS8
+      - RUN_NUMBER=8
+    container_name: add_engine_8
+    entrypoint: ["gradle", "run"]
+  add_engine_9:
+    build: .
+    image: add_server:alpha
+    volumes:
+      - ./app:/decisions/app
+      - ./jars:/decisions/jars
+      - ./debug:/decisions/debug
+      - ./formulations:/decisions/formulations
+      - ./results:/decisions/results
+      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
+      - /home/ec2-user/repos/itaca/.:/itaca
+    depends_on:
+      - neo4j
+    env_file: grouprun.env
+    environment:
+      - PROBLEM=TDRS9
+      - FORMULATION=TDRS9
+      - RUN_NUMBER=9
+    container_name: add_engine_9
+    entrypoint: [ "gradle", "run" ]
+  add_engine_10:
+    build: .
+    image: add_server:alpha
+    volumes:
+      - ./app:/decisions/app
+      - ./jars:/decisions/jars
+      - ./debug:/decisions/debug
+      - ./formulations:/decisions/formulations
+      - ./results:/decisions/results
+      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
+      - /home/ec2-user/repos/itaca/.:/itaca
+    depends_on:
+      - neo4j
+    env_file: grouprun.env
+    environment:
+      - PROBLEM=TDRS10
+      - FORMULATION=TDRS10
+      - RUN_NUMBER=10
+    container_name: add_engine_10
+    entrypoint: [ "gradle", "run" ]
+
