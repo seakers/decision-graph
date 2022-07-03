@@ -15,7 +15,7 @@ public class App {
         // Wait for Neo4j to boot
         try{
             System.out.println("--> WAITING FOR NEO4J BOOT");
-            TimeUnit.SECONDS.sleep(10);
+            TimeUnit.SECONDS.sleep(5);
             System.out.println("--> FINISHED WAITING");
         }
         catch (Exception ex){
