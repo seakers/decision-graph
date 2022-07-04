@@ -17,7 +17,9 @@ services:
       - NEO4J_dbms_security_procedures_whitelist=gds.*
       - NEO4JLABS_PLUGINS='["graph-data-science"]'
   add_engine_1:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -38,7 +40,9 @@ services:
 #    tty: true
     entrypoint: ["gradle", "run"]
   add_engine_2:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -58,7 +62,9 @@ services:
     container_name: add_engine_2
     entrypoint: ["gradle", "run"]
   add_engine_3:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -78,7 +84,9 @@ services:
     container_name: add_engine_3
     entrypoint: ["gradle", "run"]
   add_engine_4:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -98,7 +106,9 @@ services:
     container_name: add_engine_4
     entrypoint: ["gradle", "run"]
   add_engine_5:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -118,7 +128,9 @@ services:
     container_name: add_engine_5
     entrypoint: ["gradle", "run"]
   add_engine_6:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -138,7 +150,9 @@ services:
     container_name: add_engine_6
     entrypoint: ["gradle", "run"]
   add_engine_7:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -158,7 +172,9 @@ services:
     container_name: add_engine_7
     entrypoint: ["gradle", "run"]
   add_engine_8:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -178,7 +194,9 @@ services:
     container_name: add_engine_8
     entrypoint: ["gradle", "run"]
   add_engine_9:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -198,7 +216,9 @@ services:
     container_name: add_engine_9
     entrypoint: [ "gradle", "run" ]
   add_engine_10:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -218,7 +238,9 @@ services:
     container_name: add_engine_10
     entrypoint: [ "gradle", "run" ]
   add_engine_11:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -238,7 +260,9 @@ services:
     container_name: add_engine_11
     entrypoint: [ "gradle", "run" ]
   add_engine_12:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -258,7 +282,9 @@ services:
     container_name: add_engine_12
     entrypoint: [ "gradle", "run" ]
   add_engine_13:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -278,7 +304,9 @@ services:
     container_name: add_engine_13
     entrypoint: [ "gradle", "run" ]
   add_engine_14:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -298,7 +326,9 @@ services:
     container_name: add_engine_14
     entrypoint: [ "gradle", "run" ]
   add_engine_15:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -318,7 +348,9 @@ services:
     container_name: add_engine_15
     entrypoint: [ "gradle", "run" ]
   add_engine_16:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -338,7 +370,9 @@ services:
     container_name: add_engine_16
     entrypoint: [ "gradle", "run" ]
   add_engine_17:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -358,7 +392,9 @@ services:
     container_name: add_engine_17
     entrypoint: [ "gradle", "run" ]
   add_engine_18:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -378,7 +414,9 @@ services:
     container_name: add_engine_18
     entrypoint: [ "gradle", "run" ]
   add_engine_19:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -398,7 +436,9 @@ services:
     container_name: add_engine_19
     entrypoint: [ "gradle", "run" ]
   add_engine_20:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -418,7 +458,9 @@ services:
     container_name: add_engine_20
     entrypoint: [ "gradle", "run" ]
   add_engine_21:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -438,7 +480,9 @@ services:
     container_name: add_engine_21
     entrypoint: [ "gradle", "run" ]
   add_engine_22:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -458,7 +502,9 @@ services:
     container_name: add_engine_22
     entrypoint: [ "gradle", "run" ]
   add_engine_23:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -478,7 +524,9 @@ services:
     container_name: add_engine_23
     entrypoint: [ "gradle", "run" ]
   add_engine_24:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -498,7 +546,9 @@ services:
     container_name: add_engine_24
     entrypoint: [ "gradle", "run" ]
   add_engine_25:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -518,7 +568,9 @@ services:
     container_name: add_engine_25
     entrypoint: [ "gradle", "run" ]
   add_engine_26:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -538,7 +590,9 @@ services:
     container_name: add_engine_26
     entrypoint: [ "gradle", "run" ]
   add_engine_27:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -558,7 +612,9 @@ services:
     container_name: add_engine_27
     entrypoint: [ "gradle", "run" ]
   add_engine_28:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -578,7 +634,9 @@ services:
     container_name: add_engine_28
     entrypoint: [ "gradle", "run" ]
   add_engine_29:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -598,7 +656,9 @@ services:
     container_name: add_engine_29
     entrypoint: [ "gradle", "run" ]
   add_engine_30:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
