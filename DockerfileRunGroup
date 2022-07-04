@@ -28,7 +28,6 @@ WORKDIR /decisions
 
 COPY ./app/. /decisions/app
 COPY ./jars/. /decisions/jars
-COPY /home/ec2-user/repos/itaca/. /itaca
 COPY settings.gradle /decisions/
 
 RUN gradle installDist
