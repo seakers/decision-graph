@@ -31,9 +31,9 @@ public class AdgCrossover implements Variation {
         // CROSSOVER
         int child_id = -1;
         try {
-            // RANDOM CHANGE
-            // child_id = this.graph.crossoverDesigns(res1.design_idx, res2.design_idx, this.mutation_prob);
-            child_id = this.graph.generateRandomDesign();
+            // CROSSOVER VS RANDOM
+            child_id = this.graph.crossoverDesigns(res1.design_idx, res2.design_idx, this.mutation_prob);
+            // child_id = this.graph.generateRandomDesign();
         } catch (Exception e) {
             e.printStackTrace();
         }
