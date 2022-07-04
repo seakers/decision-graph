@@ -22,7 +22,6 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
@@ -45,7 +44,6 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
@@ -67,12 +65,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -89,12 +85,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -111,12 +105,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -133,12 +125,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -155,12 +145,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -177,12 +165,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -199,12 +185,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -221,12 +205,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -243,12 +225,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -265,12 +245,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -287,12 +265,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -309,12 +285,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -331,12 +305,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -353,12 +325,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -375,12 +345,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -397,12 +365,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -419,12 +385,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -441,12 +405,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -463,12 +425,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -485,12 +445,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -507,12 +465,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -529,12 +485,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -551,12 +505,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -573,12 +525,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -595,12 +545,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -617,12 +565,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -639,12 +585,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
@@ -661,12 +605,10 @@ services:
       dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
-      - ./app:/decisions/app
       - ./jars:/decisions/jars
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      #      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
       - /home/ec2-user/repos/itaca/.:/itaca
     depends_on:
       - neo4j
