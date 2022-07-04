@@ -13,6 +13,7 @@ import org.neo4j.driver.Record;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public class Graph {
 
@@ -86,6 +87,22 @@ public class Graph {
                                 .setFormulation(this.formulation)
                                 .setProblem(this.problem)
                                 .build();
+
+            try{
+                int counter = 0;
+                while(!this.client.validateConnection()){
+                    System.out.println("--> COULD NOT CONNECT TO NEO4J, TRYING AGAIN IN 5...");
+                    TimeUnit.SECONDS.sleep(5);
+                    counter++;
+                    if(counter > 10){
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+            }
+
             if(reset_nodes){
                 this.client.obliterateNodes();
             }
