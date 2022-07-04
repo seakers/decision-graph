@@ -27,6 +27,7 @@ ENV PATH="/installs/gradle-7.4/bin:${PATH}"
 WORKDIR /decisions
 
 COPY ./app /decisions
+COPY ./jars /decisions
 COPY settings.gradle /decisions/
 
 RUN gradle installDist
