@@ -44,6 +44,7 @@ public class TdrsEvaluator {
         System.out.println("--> DESIGN TO EVAL: " + solution.design);
         NumArray pay_assignment = solution.getPayloadAssignment();
         ArrayList<Long> pay_alloc = solution.getPayloadAllocation();
+        String procurement_string = solution.getProcurementInfo();
 
         // -----------------------------
         // ----- EVALUATE / RETURN -----
@@ -56,6 +57,7 @@ public class TdrsEvaluator {
             arch.setVariable( "id", "sm" + 1 );
             arch.setVariable("payload-assignment", pay_assignment);
             arch.setVariable("payload-allocation", pay_alloc);
+            arch.setVariable("contract-modalities", procurement_string);
         }
         catch (Exception ex){
             ex.printStackTrace();

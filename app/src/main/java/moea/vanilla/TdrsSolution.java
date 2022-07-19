@@ -25,6 +25,7 @@ public class TdrsSolution extends Solution {
         Decisions
         - Payload Assignment: 9 bits (3 consts) (3 payloads)
         - Payload Partitioning: 9 bits (1/2/3 possible for each bit)
+        - Contract Modalities: 3 bits (0/1 for procurement or contract-modalities)
      */
     public TdrsSolution(int num_objectives){
         super(1, num_objectives, 0);
@@ -37,6 +38,9 @@ public class TdrsSolution extends Solution {
         }
         for(int x = 0; x < 9; x++){
             this.design.add(this.rand.nextInt(3) + 1);
+        }
+        for(int x = 0; x < 3; x++){
+            this.design.add(this.rand.nextInt(2));
         }
 
         // --> 2. Instantiate other variables
@@ -87,6 +91,9 @@ public class TdrsSolution extends Solution {
         // --> 2. Verify partitioning decision
         this.verifyPartitions();
 
+        // --> 3. Verify contract modalities
+        this.verifyContracts();
+
         if(!sat_exists){
             // --> If no sats, set evaluated and
             this.setObjective(0, 0);     // Benefit
@@ -117,6 +124,14 @@ public class TdrsSolution extends Solution {
         }
     }
 
+    public void verifyContracts(){
+        for(int x = 18; x < 21; x++){
+            if(design.get(x) != 0 && design.get(x) != 1){
+                design.set(x, this.rand.nextInt(2));
+            }
+        }
+    }
+
 
 
 
@@ -132,8 +147,16 @@ public class TdrsSolution extends Solution {
                         this.design.set(idx, 0);
                     }
                 }
-                else{
+                else if(idx < 18){
                     this.design.set(idx, this.rand.nextInt(3) + 1);
+                }
+                else{
+                    if(this.design.get(idx) == 0){
+                        this.design.set(idx, 1);
+                    }
+                    else{
+                        this.design.set(idx, 0);
+                    }
                 }
             }
         }
@@ -176,6 +199,41 @@ public class TdrsSolution extends Solution {
 
         return pay_alloc;
     }
+
+    public String getProcurementInfo(){
+        String procurement_string = " ";
+
+        int const_idx = 0;
+        for(int x = 18; x < 21; x++){
+            if(this.validateConstIdx(const_idx)){
+                if(this.design.get(x).equals(0)){
+                    procurement_string += " procurement";
+                }
+                else{
+                    procurement_string += " hosted-payloads";
+                }
+            }
+            else{
+                procurement_string += " N/A";
+            }
+            const_idx++;
+        }
+
+        return procurement_string;
+    }
+
+    private boolean validateConstIdx(int idx){
+        int start = idx * 3;
+        int count = 0;
+        while(count < 3){
+            if(this.design.get(start + count) != 0){
+                return true;
+            }
+            count++;
+        }
+        return false;
+    }
+
 
     public NumArray repair_partition(ArrayList<Integer> partition){
         NumArray tmp = new NumArray();

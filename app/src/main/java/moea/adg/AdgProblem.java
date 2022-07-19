@@ -47,8 +47,8 @@ public class AdgProblem extends AbstractProblem {
         }
 
         // VANILLA CHANGE
-        results = TdrsEvaluator.getInstance().evaluateAdg(solution);
-        // results = TdrsEvaluator.getInstance().evaluateVanilla(solution);
+        // results = TdrsEvaluator.getInstance().evaluateAdg(solution);
+        results = TdrsEvaluator.getInstance().evaluateVanilla(solution);
 
 
 
@@ -86,8 +86,8 @@ public class AdgProblem extends AbstractProblem {
 
         // VANILLA CHANGE
         Solution solution;
-        solution = new AdgSolution(this.graph, this.num_objectives);
-        // solution = new TdrsSolution(this.num_objectives);
+        // solution = new AdgSolution(this.graph, this.num_objectives);
+        solution = new TdrsSolution(this.num_objectives);
 
         return solution;
     }
