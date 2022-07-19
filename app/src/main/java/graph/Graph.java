@@ -87,21 +87,7 @@ public class Graph {
                                 .setFormulation(this.formulation)
                                 .setProblem(this.problem)
                                 .build();
-
-            try{
-                int counter = 0;
-                while(!this.client.validateConnection()){
-                    System.out.println("--> COULD NOT CONNECT TO NEO4J, TRYING AGAIN IN 5...");
-                    TimeUnit.SECONDS.sleep(5);
-                    counter++;
-                    if(counter > 10){
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex){
-                ex.printStackTrace();
-            }
+            this.client.waitForConnection();
 
             if(reset_nodes){
                 this.client.obliterateNodes();

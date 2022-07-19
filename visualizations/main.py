@@ -1,7 +1,10 @@
 import os
+import pandas as pd
+import glob
+
 from parsing import parse_population_file
 from scatterplots import scatterplot_2d, scatterplot_2d_overlay
-from hvplots import get_hv_plot
+from hvplots import get_hv_plot, get_hv_plot_multi
 
 
 # results_dir = "/c/Users/apaza/repos/seakers/decision-graph/results/"
@@ -13,8 +16,11 @@ problem_dir = os.path.join(results_dir, 'TDRS')
 
 
 
-run_0 = os.path.join(problem_dir, 'run_0')
-run_1 = os.path.join(problem_dir, 'run_1')
+group_0 = os.path.join(problem_dir, 'group_0', 'runs')
+group_1 = os.path.join(problem_dir, 'group_1', 'runs')
+group_2 = os.path.join(problem_dir, 'group_2', 'runs')
+group_3 = os.path.join(problem_dir, 'group_3', 'runs')
+group_4 = os.path.join(problem_dir, 'group_4', 'runs')
 
 
 def run_single_analysis():
@@ -22,7 +28,7 @@ def run_single_analysis():
     # ------------------------
     # ----- SET RUN FILE -----
     # ------------------------
-    run = run_0
+    run = group_0
 
     # --------------------
     # ----- ANALYSIS -----
@@ -41,20 +47,23 @@ def run_dual_analysis():
     # ------------------------
     # ----- SET RUN FILE -----
     # ------------------------
-    run_a = problem_dir
-    run_b = problem_dir
+    run_a = group_3
+    run_b = group_4
 
     # --------------------
     # ----- ANALYSIS -----
     # --------------------
-    get_hv_plot(run_a, run_b)
+    get_hv_plot(run_a, run_b, tag_a='VANILLA-RANDOM', tag_b='ADG-RANDOM')
 
 
+def run_multi_analysis():
 
-
-
-
-
+    runs = [
+        (group_0, 'VANILLA'),
+        (group_2, 'ADG'),
+        (group_3, 'RANDOM')
+    ]
+    get_hv_plot_multi(runs)
 
 
 
@@ -72,5 +81,5 @@ def run_dual_analysis():
 
 
 if __name__ == '__main__':
-    run_dual_analysis()
+    run_multi_analysis()
 

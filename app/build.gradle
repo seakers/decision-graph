@@ -51,6 +51,7 @@ dependencies {
     // implementation fileTree('/home/gapaza/repos/seakers/decision-graph/cameo-lib') { include '*.jar' }
 
     // ITACA Evaluator (NOT NEEDED)
+    // implementation fileTree('C:\\Users\\apaza\\repos\\seakers\\decision-graph\\jars-old') { include '*.jar' }
     // implementation fileTree('C:\\Users\\apaza\\repos\\seakers\\decision-graph\\jars') { include '*.jar' }
     implementation fileTree('/decisions/jars') { include '*.jar' }
 

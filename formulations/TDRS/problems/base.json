@@ -7,7 +7,7 @@
           "name": "procurement"
         },
         {
-          "name": "hosted-payload"
+          "name": "hosted-payloads"
         }
       ],
       "isl-payloads": [
@@ -26,7 +26,7 @@
           "name": "procurement"
         },
         {
-          "name": "hosted-payload"
+          "name": "hosted-payloads"
         }
       ],
       "isl-payloads": [
@@ -45,7 +45,7 @@
           "name": "procurement"
         },
         {
-          "name": "hosted-payload"
+          "name": "hosted-payloads"
         }
       ],
       "isl-payloads": [

@@ -111,6 +111,21 @@ public class TdrsEvaluator {
             pay_alloc.add(tmp.intArray2LongDec());
         }
 
+        // -------------------------------
+        // ----- CONTRACT MODALITIES -----
+        // -------------------------------
+        JsonObject sf_decision = solution.getDesignDecision("Contract Modalities");
+        String procurement_string = "";
+        for(String key: keys){
+            if(sf_decision.has(key)){
+                procurement_string += (" " + sf_decision.getAsJsonObject(key).getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString());
+            }
+            else{
+                procurement_string += " N/A";
+            }
+        }
+        System.out.println(procurement_string);
+
 
 
 
@@ -126,6 +141,7 @@ public class TdrsEvaluator {
             arch.setVariable( "id", "sm" + 1 );
             arch.setVariable("payload-assignment", pay_assignment);
             arch.setVariable("payload-allocation", pay_alloc);
+            arch.setVariable("contract-modalities", procurement_string);
         }
         catch (Exception ex){
             ex.printStackTrace();

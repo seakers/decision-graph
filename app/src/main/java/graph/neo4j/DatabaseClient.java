@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 public class DatabaseClient {
 
@@ -60,6 +61,25 @@ public class DatabaseClient {
 
 
 
+
+
+    public boolean waitForConnection(){
+        try{
+            int counter = 0;
+            while(!this.validateConnection()){
+                System.out.println("--> COULD NOT CONNECT TO NEO4J, TRYING AGAIN IN 5...");
+                TimeUnit.SECONDS.sleep(3);
+                counter++;
+                if(counter > 20){
+                    return false;
+                }
+            }
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return true;
+    }
     public boolean validateConnection(){
         try{
             this.driver.verifyConnectivity();
@@ -69,7 +89,6 @@ public class DatabaseClient {
         }
         return true;
     }
-
 
 //      ____                  _
 //     / __ \                (_)

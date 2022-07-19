@@ -8,6 +8,10 @@
       "name": "Antenna Partitioning",
       "type": "Partitioning",
       "options": "cluster"
+    },
+    {
+      "name": "Contract Modalities",
+      "type": "StandardForm"
     }
   ],
   "edges":[
@@ -27,6 +31,11 @@
       "parent": "Antenna Assignment",
       "child": "Antenna Partitioning",
       "operates_on": "antennas"
+    },
+    {
+      "parent": "Antenna Assignment",
+      "child": "Contract Modalities",
+      "operates_on": "contract-modalities"
     }
   ]
 }

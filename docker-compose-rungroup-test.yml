@@ -17,7 +17,9 @@ services:
       - NEO4J_dbms_security_procedures_whitelist=gds.*
       - NEO4JLABS_PLUGINS='["graph-data-science"]'
   add_engine_1:
-    build: .
+    build:
+      context: .
+      dockerfile: DockerfileRunGroup
     image: add_server:alpha
     volumes:
       - ./app:/decisions/app
@@ -25,8 +27,8 @@ services:
       - ./debug:/decisions/debug
       - ./formulations:/decisions/formulations
       - ./results:/decisions/results
-      - /c/Users/apaza/repos/gabe/itaca/.:/itaca
-    #      - /home/ec2-user/repos/itaca/.:/itaca
+      - /home/gapaza/repos/gabe/scan/.:/scan
+    #      - /home/ec2-user/repos/scan/.:/scan
     depends_on:
       - neo4j
     env_file: grouprun.env
