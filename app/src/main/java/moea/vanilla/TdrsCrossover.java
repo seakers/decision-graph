@@ -44,8 +44,8 @@ public class TdrsCrossover implements Variation {
 
         // CREATE CHILD
         // RANDOM CHANGE
-        TdrsSolution child_design = new TdrsSolution(this.num_objectives);
-        // TdrsSolution child_design = new TdrsSolution(this.num_objectives, child);
+        // TdrsSolution child_design = new TdrsSolution(this.num_objectives);
+        TdrsSolution child_design = new TdrsSolution(this.num_objectives, child);
         child_design.mutateDesign();
 
         // RETURN CHILD

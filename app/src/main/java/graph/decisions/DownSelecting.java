@@ -322,28 +322,24 @@ public class DownSelecting extends Decision {
 
     @Override
     public void mutateChromosome(JsonObject decision, double probability){
-        if(Decision.getProbabilityResult(probability)){
 
-
-
-//            ArrayList<Integer> chromosome = this.gson.fromJson(decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
-//            decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
-//
-//            // --> 1. Get a random bit index to flip
-//            int rand_idx = this.rand.nextInt(chromosome.size());
-//            if(chromosome.get(rand_idx) == 0){
-//                chromosome.set(rand_idx, 1);
-//            }
-//            else if(chromosome.get(rand_idx) == 1){
-//                chromosome.set(rand_idx, 0);
-//            }
-//            else{
-//                System.out.println("--> ERROR: chromosome element to mutate not in proper form (assigning)");
-//                System.exit(0);
-//            }
-//
-//            decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+        ArrayList<Integer> chromosome = this.gson.fromJson(decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+        decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+        for(int idx = 0; idx < chromosome.size(); idx++){
+            if(Decision.getProbabilityResult(this.flip_probability)){
+                if(chromosome.get(idx) == 0){
+                    chromosome.set(idx, 1);
+                }
+                else if(chromosome.get(idx) == 1){
+                    chromosome.set(idx, 0);
+                }
+                else{
+                    System.out.println("--> ERROR: chromosome element to mutate not in proper form (assigning)");
+                    System.exit(0);
+                }
+            }
         }
+        decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
     }
 
 

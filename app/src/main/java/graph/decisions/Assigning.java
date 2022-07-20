@@ -368,14 +368,13 @@ public class Assigning extends Decision {
 
     @Override
     public void mutateChromosome(JsonObject decision, double probability){
-        double prob_bit_flip = 1.0 / 18.0;
 
         ArrayList<Integer> chromosome = this.gson.fromJson(decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
         decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
 
         // --> 1. Some probability to mutate each bit
         for(int x = 0; x < chromosome.size(); x++){
-            if(Decision.getProbabilityResult(prob_bit_flip)){
+            if(Decision.getProbabilityResult(this.flip_probability)){
                 if(chromosome.get(x) == 0){
                     chromosome.set(x, 1);
                 }

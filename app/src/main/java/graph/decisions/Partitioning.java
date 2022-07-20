@@ -347,7 +347,6 @@ public class Partitioning extends Decision {
 
     @Override
     public void mutateChromosome(JsonObject decision, double probability){
-        double prob_bit_flip = 1.0 / 18.0;
 
         for(String key: decision.keySet()){
             JsonObject decision_component = decision.get(key).getAsJsonObject();
@@ -357,7 +356,7 @@ public class Partitioning extends Decision {
 
             // --> Mutate and repair
             for(int x = 0; x < chromosome.size(); x++) {
-                if (Decision.getProbabilityResult(prob_bit_flip)) {
+                if (Decision.getProbabilityResult(this.flip_probability)) {
                     int rand_group = this.rand.nextInt(max_possible_groups) + 1;
                     chromosome.set(x, rand_group);
                 }
