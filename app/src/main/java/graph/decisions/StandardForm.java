@@ -239,7 +239,7 @@ public class StandardForm extends Decision {
         /*
             - Build crossover decision
          */
-        this.writeCrossoverDebugFile(child_decision, "child_dependencies.json");
+        this.writeCrossoverDebugFile(child_decision, "child_decision.json");
         this.buildDecision(child_decision);
 
 
@@ -274,8 +274,6 @@ public class StandardForm extends Decision {
             child_decision_component.add(info_key, this.gson.toJsonTree(parent_info).getAsJsonArray());
         }
     }
-
-
 
     public void crossoverUsableInfo(JsonObject child_decision){
 
@@ -322,23 +320,26 @@ public class StandardForm extends Decision {
     @Override
     public void mutateChromosome(JsonObject decision, double probability){
 
-        ArrayList<Integer> chromosome = this.gson.fromJson(decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
-        decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
-        double updated_prob = (1 - (1 - this.flip_probability) * chromosome.size());
-        if(Decision.getProbabilityResult(updated_prob)){
-            int rand_idx = this.rand.nextInt(chromosome.size());
-            if(chromosome.get(rand_idx) == 0){
-                chromosome.set(rand_idx, 1);
+        // --> Test printing chromosome and stuff
+        for(String key: decision.keySet()){
+            JsonObject sub_decision = decision.getAsJsonObject(key);
+            ArrayList<Integer> chromosome = this.gson.fromJson(sub_decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+            sub_decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+            double updated_prob = (1 - (1 - this.flip_probability) * chromosome.size());
+            if(Decision.getProbabilityResult(updated_prob)){
+                int rand_idx = this.rand.nextInt(chromosome.size());
+                if(chromosome.get(rand_idx) == 0){
+                    chromosome.set(rand_idx, 1);
+                }
+                else if(chromosome.get(rand_idx) == 1){
+                    chromosome.set(rand_idx, 0);
+                }
+                else{
+                    System.out.println("--> ERROR: chromosome element to mutate not in proper form (assigning)");
+                    System.exit(0);
+                }
             }
-            else if(chromosome.get(rand_idx) == 1){
-                chromosome.set(rand_idx, 0);
-            }
-            else{
-                System.out.println("--> ERROR: chromosome element to mutate not in proper form (assigning)");
-                System.exit(0);
-            }
-
-            decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+            sub_decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
         }
     }
 

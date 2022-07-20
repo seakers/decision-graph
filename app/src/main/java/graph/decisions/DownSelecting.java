@@ -323,23 +323,26 @@ public class DownSelecting extends Decision {
     @Override
     public void mutateChromosome(JsonObject decision, double probability){
 
-        ArrayList<Integer> chromosome = this.gson.fromJson(decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
-        decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
-        for(int idx = 0; idx < chromosome.size(); idx++){
-            if(Decision.getProbabilityResult(this.flip_probability)){
-                if(chromosome.get(idx) == 0){
-                    chromosome.set(idx, 1);
-                }
-                else if(chromosome.get(idx) == 1){
-                    chromosome.set(idx, 0);
-                }
-                else{
-                    System.out.println("--> ERROR: chromosome element to mutate not in proper form (assigning)");
-                    System.exit(0);
+        for(String key: decision.keySet()){
+            JsonObject sub_decision = decision.getAsJsonObject(key);
+            ArrayList<Integer> chromosome = this.gson.fromJson(sub_decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+            sub_decision.add("chromosome_bm", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
+            for(int idx = 0; idx < chromosome.size(); idx++){
+                if(Decision.getProbabilityResult(this.flip_probability)){
+                    if(chromosome.get(idx) == 0){
+                        chromosome.set(idx, 1);
+                    }
+                    else if(chromosome.get(idx) == 1){
+                        chromosome.set(idx, 0);
+                    }
+                    else{
+                        System.out.println("--> ERROR: chromosome element to mutate not in proper form (assigning)");
+                        System.exit(0);
+                    }
                 }
             }
+            sub_decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
         }
-        decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
     }
 
 
