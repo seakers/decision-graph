@@ -17,6 +17,7 @@ import org.moeaframework.core.Solution;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Paths;
+import java.util.List;
 
 public class Runs {
 
@@ -35,10 +36,14 @@ public class Runs {
     public static String type = System.getenv("RUN_TYPE"); // ADG | VANILLA
     // public static String type = "VANILLA"; // ADG | VANILLA
 
+    public static int run_number = Integer.parseInt(System.getenv("RUN_NUMBER"));
+
 
 
     public static String group_path;
     public static String group_run_path;
+
+    public static String run_path;
 
     public static void createRunGroup(){
         String results_path = Files.curr_results;
@@ -92,29 +97,31 @@ public class Runs {
 
 
 
-
-
     /*
         Each moea run records
         - Final population (single JsonArray file containing all JsonObject designs)
         - Hypervolume progression as a function of NFE
      */
-    public static void writeRun(Analyzer analyzer, Accumulator accumulator, NondominatedPopulation final_pop, int nfe){
+
+    public static void initRun(){
         String results_path = Runs.group_run_path;
-        int run_num = new File(results_path).list().length;
-        // String run_dir_name = "run_" + run_num;
-        String run_dir_name = "run_" + System.getenv("RUN_NUMBER");
+        String run_dir_name = "run_" + Runs.run_number;
         String run_path = Paths.get(results_path, run_dir_name).toString();
         Files.createDir(run_path);
+        Runs.run_path = run_path;
+    }
+
+    public static void writeRun(Analyzer analyzer, Accumulator accumulator, NondominatedPopulation final_pop, int nfe){
 
         // --> 1. Save population
-        Runs.writePopulation(final_pop, run_path);
+        Runs.writePopulation(final_pop, Runs.run_path);
 
         // --> 2. Save hv data
-        Runs.writeHVProgression(accumulator, run_path);
+        Runs.writeHVProgression(accumulator, Runs.run_path);
 
         analyzer.printAnalysis();
     }
+
 
 
     public static void writeHVProgression(Accumulator accumulator, String run_path){
@@ -165,6 +172,45 @@ public class Runs {
         }
         return design;
     }
+
+
+
+
+
+
+    public static void writeTdrsPopulation(List<Solution> population){
+        String pop_file = Paths.get(run_path, "starting_pop.json").toString();
+        JsonArray designs = new JsonArray();
+
+        try {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            FileWriter outputfile = new FileWriter(pop_file);
+            for(Solution item: population){
+                if(item instanceof TdrsSolution){
+                    TdrsSolution solution = (TdrsSolution) item;
+                    designs.add(solution.getTdrsDesignJson());
+                }
+                else if(item instanceof AdgSolution){
+                    AdgSolution solution = (AdgSolution) item;
+                    designs.add(solution.getDesignBits());
+                }
+                else{
+                    System.out.println("--> ERROR: can't write design as class type not recognized");
+                    System.exit(0);
+                }
+            }
+            gson.toJson(designs, outputfile);
+            outputfile.flush();
+            outputfile.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            System.out.println("WRITING EXCEPTION");
+        }
+    }
+
+
+
 
 
 }

@@ -1,5 +1,7 @@
 package moea.vanilla;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import graph.Decision;
 import graph.chromosome.BitString;
 import moea.adg.AdgProblem;
@@ -55,6 +57,8 @@ public class TdrsSolution extends Solution {
     public TdrsSolution(int num_objectives, ArrayList<Integer> design){
         super(1, num_objectives, 0);
 
+        System.out.println("----> NEW DESIGN: " + design);
+
         this.design = design;
         this.rand = new Random();
         this.ID = UUID.randomUUID().toString();
@@ -100,7 +104,7 @@ public class TdrsSolution extends Solution {
             this.setObjective(1, 19000); // Cost
             this.already_evaluated = true;
         }
-        System.out.println("--> FINISHED VERIFYING DESIGN: " + this.design);
+        System.out.println("--> VERIFICATION: " + this.design);
     }
 
     public void verifyPartitions(){
@@ -233,6 +237,17 @@ public class TdrsSolution extends Solution {
         }
         return false;
     }
+
+
+    public JsonArray getTdrsDesignJson(){
+        JsonArray design_obj = new JsonArray();
+
+
+
+        return design_obj;
+    }
+
+
 
 
     public NumArray repair_partition(ArrayList<Integer> partition){

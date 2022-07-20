@@ -72,61 +72,67 @@ public class TdrsEvaluator {
         // ------------------------------
         // ----- ANTENNA ASSIGNMENT -----
         // ------------------------------
-        JsonObject assignment_decision = solution.getDesignDecision("Antenna Assignment");
-        ArrayList<Integer> antenna_assignment = gson.fromJson(assignment_decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
-        NumArray pay_assignment = new NumArray();
-        int idx = 0;
-        for(int x = 0; x < 3; x++){
-            String num = "";
-            for(int y = 0; y < 3; y++){
-                num += antenna_assignment.get(idx);
-                idx++;
-            }
-            System.out.println(AdgProblem.baseConversion(num, 2, 10));
-            pay_assignment.add(AdgProblem.baseConversion(num, 2, 10));
-        }
+//        JsonObject assignment_decision = solution.getDesignDecision("Antenna Assignment");
+//        ArrayList<Integer> antenna_assignment = gson.fromJson(assignment_decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+//        NumArray pay_assignment = new NumArray();
+//        int idx = 0;
+//        for(int x = 0; x < 3; x++){
+//            String num = "";
+//            for(int y = 0; y < 3; y++){
+//                num += antenna_assignment.get(idx);
+//                idx++;
+//            }
+//            System.out.println(AdgProblem.baseConversion(num, 2, 10));
+//            pay_assignment.add(AdgProblem.baseConversion(num, 2, 10));
+//        }
+        NumArray pay_assignment = solution.getPayloadAssignment();
 
 
         // --------------------------------
         // ----- ANTENNA PARTITIONING -----
         // --------------------------------
-        JsonObject partitioning_decision = solution.getDesignDecision("Antenna Partitioning");
-        ArrayList<Long> pay_alloc = new ArrayList<Long>();
-        ArrayList<String> keys = new ArrayList<>();
-        keys.add("1");
-        keys.add("6");
-        keys.add("11");
-        for(String key: keys){
-            NumArray tmp = new NumArray();
-
-            if(partitioning_decision.keySet().contains(key)){
-                JsonObject sub_decision = partitioning_decision.getAsJsonObject(key);
-                ArrayList<Integer> sub_chromosome = gson.fromJson(sub_decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
-                for(Integer var: sub_chromosome){
-                    tmp.add(var);
-                }
-
-            }
-            else{
-                tmp.add(0);
-            }
-            pay_alloc.add(tmp.intArray2LongDec());
-        }
+//        JsonObject partitioning_decision = solution.getDesignDecision("Antenna Partitioning");
+//        ArrayList<Long> pay_alloc = new ArrayList<Long>();
+//        ArrayList<String> keys = new ArrayList<>();
+//        keys.add("1");
+//        keys.add("6");
+//        keys.add("11");
+//        for(String key: keys){
+//            NumArray tmp = new NumArray();
+//
+//            if(partitioning_decision.keySet().contains(key)){
+//                JsonObject sub_decision = partitioning_decision.getAsJsonObject(key);
+//                ArrayList<Integer> sub_chromosome = gson.fromJson(sub_decision.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+//                for(Integer var: sub_chromosome){
+//                    tmp.add(var);
+//                }
+//
+//            }
+//            else{
+//                tmp.add(0);
+//            }
+//            pay_alloc.add(tmp.intArray2LongDec());
+//        }
+        ArrayList<Long> pay_alloc = solution.getPayloadAllocation();
 
         // -------------------------------
         // ----- CONTRACT MODALITIES -----
         // -------------------------------
-        JsonObject sf_decision = solution.getDesignDecision("Contract Modalities");
-        String procurement_string = "";
-        for(String key: keys){
-            if(sf_decision.has(key)){
-                procurement_string += (" " + sf_decision.getAsJsonObject(key).getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString());
-            }
-            else{
-                procurement_string += " N/A";
-            }
-        }
-        System.out.println(procurement_string);
+//        JsonObject sf_decision = solution.getDesignDecision("Contract Modalities");
+//        String procurement_string = "";
+//        ArrayList<String> keys = new ArrayList<>();
+//        keys.add("1");
+//        keys.add("6");
+//        keys.add("11");
+//        for(String key: keys){
+//            if(sf_decision.has(key)){
+//                procurement_string += (" " + sf_decision.getAsJsonObject(key).getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString());
+//            }
+//            else{
+//                procurement_string += " N/A";
+//            }
+//        }
+        String procurement_string = solution.getProcurementInfo();
 
 
 

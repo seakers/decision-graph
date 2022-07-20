@@ -1,5 +1,12 @@
 package moea.adg;
 
+import app.Files;
+import app.Runs;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import graph.Graph;
 import moea.vanilla.TdrsCrossover;
 import moea.vanilla.TdrsSolution;
@@ -10,6 +17,8 @@ import org.moeaframework.core.comparator.ParetoObjectiveComparator;
 import org.moeaframework.core.operator.InjectedInitialization;
 import org.moeaframework.core.operator.TournamentSelection;
 
+import java.io.FileReader;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
@@ -60,6 +69,16 @@ public class AdgMoea implements Runnable{
         }
 
         public Builder buildPopulaiton(int pop_size){
+            if(System.getenv("LOAD_POP").equals("TRUE")){
+                this.loadPopulation();
+            }
+            else{
+                this.generatePopulation(pop_size);
+            }
+            return this;
+        }
+        private void generatePopulation(int pop_size){
+            System.out.println("--> GENERATING POPULATION");
             this.pop_size = pop_size;
             this.population = new ArrayList<>(pop_size);
             for(int x = 0; x < this.pop_size; x++){
@@ -71,8 +90,32 @@ public class AdgMoea implements Runnable{
 
                 this.population.add(solution);
             }
-            return this;
+            if(System.getenv("SAVE_INITIAL_POP").equals("TRUE")){
+                Runs.writeTdrsPopulation(this.population);
+            }
         }
+        private void loadPopulation(){
+            System.out.println("--> LOADING POPULATION");
+            Gson gson = new Gson();
+            String load_group_runs_path = Paths.get(Files.curr_results, System.getenv("LOAD_GROUP"), "runs").toString();
+            String load_run_path = Paths.get(load_group_runs_path, ("run_"+Runs.run_number)).toString();
+            String arch_file_path = Paths.get(load_run_path, "starting_pop.json").toString();
+            try{
+                JsonArray population = JsonParser.parseReader(new FileReader(arch_file_path)).getAsJsonArray();
+                this.pop_size = population.size();
+                this.population = new ArrayList<>(pop_size);
+                for(int x = 0; x < population.size(); x++){
+                    ArrayList<Integer> design_bits = gson.fromJson(population.get(x).getAsJsonArray(), new TypeToken<ArrayList<Integer>>(){}.getType());
+                    Solution solution;
+                    solution = new TdrsSolution(this.num_objectives, design_bits);
+                    this.population.add(solution);
+                }
+            }
+            catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
 
         private EpsilonMOEA initialize(Problem adg_problem){
 

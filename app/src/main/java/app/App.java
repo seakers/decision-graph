@@ -64,6 +64,7 @@ public class App {
         int num_runs = Runs.num_runs;
 
         Runs.createRunGroup();
+        Runs.initRun();
 
         try {
             for(int x = 0; x < num_runs; x++){
