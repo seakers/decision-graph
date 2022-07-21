@@ -85,8 +85,12 @@ public class AdgMoea implements Runnable{
 
                 // VANILLA CHANGE
                 Solution solution;
-                // solution = new AdgSolution(this.graph, this.num_objectives);
-                solution = new TdrsSolution(this.num_objectives);
+                if(System.getenv("RUN_TYPE").equals("ADG")){
+                    solution = new AdgSolution(this.graph, this.num_objectives);
+                }
+                else{
+                    solution = new TdrsSolution(this.num_objectives);
+                }
 
                 this.population.add(solution);
             }
@@ -130,8 +134,12 @@ public class AdgMoea implements Runnable{
 
             // VANILLA CHANGE
             Variation var;
-            // var = new AdgCrossover(this.graph, this.num_objectives, this.mutation_prob);
-            var = new TdrsCrossover(this.num_objectives);
+            if(System.getenv("RUN_TYPE").equals("ADG")){
+                var = new AdgCrossover(this.graph, this.num_objectives, this.mutation_prob);
+            }
+            else{
+                var = new TdrsCrossover(this.num_objectives);
+            }
 
             return new EpsilonMOEA(adg_problem, population, archive, selection, var, initialization);
         }

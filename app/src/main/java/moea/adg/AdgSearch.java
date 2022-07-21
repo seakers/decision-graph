@@ -44,11 +44,12 @@ public class AdgSearch  implements Callable<Algorithm> {
     public Algorithm call(){
 
         // OPERATIONS
+
+        // --> First step evaluates the starting population (NFE = 30)
         alg.step();
+        this.updateAnalysis();
 
         Population current_pop = new Population(((AbstractEvolutionaryAlgorithm)alg).getArchive());
-
-
         while (!alg.isTerminated() && (alg.getNumberOfEvaluations() < this.nfe) && !this.is_stopped){
 
             // --> Step algorithm
@@ -57,21 +58,13 @@ public class AdgSearch  implements Callable<Algorithm> {
             // --> Get new population / update
             Population new_pop = ((AbstractEvolutionaryAlgorithm)alg).getArchive();
             if(this.new_design_check(current_pop, new_pop)){
-                this.analyzer.add("popADD", this.alg.getResult());
+                System.out.println("--> NEW DESIGN FOUND");
             }
             current_pop = new Population(new_pop);
 
             // --> Record metrics
-            int num_evals = alg.getNumberOfEvaluations();
-            if(num_evals > 30){
-                if(this.analyzer.getAnalysis().get("popADD") != null){
-                    double current_hv = this.analyzer.getAnalysis().get("popADD").get("Hypervolume").getMax();
-                    this.accumulator.add("NFE", (num_evals));
-                    this.accumulator.add("HV", current_hv);
-                }
-            }
+            this.updateAnalysis();
         }
-
 
         // --> Record run
         NondominatedPopulation final_pop = ((AbstractEvolutionaryAlgorithm) alg).getArchive();
@@ -79,6 +72,19 @@ public class AdgSearch  implements Callable<Algorithm> {
 
         return this.alg;
     }
+
+    private void updateAnalysis(){
+        this.analyzer.add("popADD", this.alg.getResult());
+        int num_evals = this.alg.getNumberOfEvaluations();
+        if(this.analyzer.getAnalysis().get("popADD") != null){
+            double current_hv = this.analyzer.getAnalysis().get("popADD").get("Hypervolume").getMax();
+            this.accumulator.add("NFE", (num_evals));
+            this.accumulator.add("HV", current_hv);
+        }
+    }
+
+
+
 
 
 
@@ -95,7 +101,4 @@ public class AdgSearch  implements Callable<Algorithm> {
         }
         return false;
     }
-
-
-
 }
