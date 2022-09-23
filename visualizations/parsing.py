@@ -12,7 +12,7 @@ def parse_hv_files(run_dir, col_name):
     wildcard_path = os.path.join(run_dir, '**', 'hypervolume.txt')
     for filename in glob.iglob(wildcard_path, recursive=True):
         csv_df = pd.read_csv(filename)
-        csv_df.drop(csv_df.index[csv_df['NFE'] < 50], inplace=True)
+        # csv_df.drop(csv_df.index[csv_df['NFE'] < 50], inplace=True)
         csv_df.reset_index()
         df = df.append(csv_df, ignore_index=True)
     df.columns = ['NFE', col_name]
