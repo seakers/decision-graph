@@ -1,9 +1,11 @@
 plugins {
-    id 'java-library'
+    id 'application'
+    id 'java'
 }
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -33,26 +35,18 @@ dependencies {
     // ITACA Evaluator
     // implementation fileTree('C:\\Users\\apaza\\repos\\seakers\\decision-graph\\jars-old') { include '*.jar' }
     // implementation fileTree('C:\\Users\\apaza\\repos\\seakers\\decision-graph\\jars') { include '*.jar' }
-    implementation fileTree("$rootDir/jars") { include '*.jar' }
+    implementation fileTree('jars') { include '*.jar' }
 }
 
-jar {
-    zip64=true
+distTar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    baseName = "decision-graph"
-
-    // --> Destination dir
-    // destinationDirectory.set(file("/Applications/Cameo Systems Modeler Demo/plugins/adg"))
-    destinationDirectory.set(file("/Users/gapaza/repos/seakers/adgplugin/adg"))
+}
+distZip {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+application {
+    mainClass = 'app.App'
+}
 
-
-
-
-
-
-
-
-
-
+project.buildDir = '/decisions/build'

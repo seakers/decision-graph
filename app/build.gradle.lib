@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 
     // AWS
     implementation platform('software.amazon.awssdk:bom:2.13.13')
@@ -30,8 +30,10 @@ dependencies {
     // Gson
     implementation 'com.google.code.gson:gson:2.8.6'
 
-    // Cameo Plugin Library (NOT NEEDED)
-    // implementation fileTree('/home/gapaza/repos/seakers/decision-graph/cameo-lib') { include '*.jar' }
+    // ITACA Evaluator
+    // implementation fileTree('C:\\Users\\apaza\\repos\\seakers\\decision-graph\\jars-old') { include '*.jar' }
+    // implementation fileTree('C:\\Users\\apaza\\repos\\seakers\\decision-graph\\jars') { include '*.jar' }
+    implementation fileTree("$rootDir/jars") { include '*.jar' }
 }
 
 jar {
@@ -39,9 +41,9 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     baseName = "decision-graph"
 
-    // destinationDirectory.set(file("$rootDir/jars"))
-    destinationDirectory.set(file("/c/Program Files/Cameo Systems Modeler Demo/plugins/adg"))
-    // destinationDirectory.set(file("/c/Users/apaza/repos/seakers/adgplugin/adg"));
+    // --> Destination dir
+    // destinationDirectory.set(file("/Applications/Cameo Systems Modeler Demo/plugins/adg"))
+    destinationDirectory.set(file("/Users/gapaza/repos/seakers/adgplugin/adg"))
 }
 
 
