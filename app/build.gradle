@@ -31,8 +31,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     // ITACA Evaluator
-    // implementation fileTree('C:\\Users\\apaza\\repos\\seakers\\decision-graph\\jars-old') { include '*.jar' }
-    // implementation fileTree('C:\\Users\\apaza\\repos\\seakers\\decision-graph\\jars') { include '*.jar' }
     implementation fileTree("$rootDir/jars") { include '*.jar' }
 }
 
@@ -43,7 +41,7 @@ jar {
 
     // --> Destination dir
     // destinationDirectory.set(file("/Applications/Cameo Systems Modeler Demo/plugins/adg"))
-    destinationDirectory.set(file("/Users/gapaza/repos/seakers/adgplugin/adg"))
+    destinationDirectory.set(file("C:\\Users\\apaza\\repos\\seakers\\adgplugin\\adg"))
 }
 
 
