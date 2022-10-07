@@ -6,6 +6,7 @@
 build
 debug
 neo4j
-
+visualizations/__pycache__
+results
 .idea
 
