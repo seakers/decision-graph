@@ -36,7 +36,7 @@ public class Graph {
     private String                     problem;
     private String                     formulation;
     private DatabaseClient             client;
-    private ArrayList<Record>          topologicalNodes;
+    public ArrayList<Record>           topologicalNodes;
     private HashMap<String, Decision>  decisions;
     private Decision                   root;
     private JsonObject                 adg_specs;
@@ -81,6 +81,7 @@ public class Graph {
 
         }
 
+
         public Builder buildDatabaseClient(String uri, String user, String password, boolean reset_nodes, boolean reset_graphs){
 
             this.client = new DatabaseClient.Builder(uri)
@@ -99,6 +100,7 @@ public class Graph {
             return this;
         }
 
+
         public Builder indexGraph(){
 
             // --> TODO: Add other problems
@@ -108,7 +110,6 @@ public class Graph {
             // --> Finally, set problem info (inputs / designs) and return
             return this.setProblemInfo();
         }
-
         private Builder setProblemInfo(){
             JsonObject problem_info = this.client.getRootProblemInfo();
             this.inputs = problem_info.getAsJsonObject("inputs").deepCopy();
@@ -121,7 +122,6 @@ public class Graph {
             this.designs = problem_info.getAsJsonArray("designs").deepCopy();
             return this;
         }
-
         private void initInputs(JsonElement inputs, int[] uid){
             if(inputs.isJsonArray()){
                 JsonArray json_dependency_ary = inputs.getAsJsonArray();
@@ -145,8 +145,6 @@ public class Graph {
         }
 
 
-
-
         public Builder buildTopologicalOrdering(){
 
             // --> 1. Define node and edge labels
@@ -166,9 +164,6 @@ public class Graph {
             System.out.println("-----------------------------\n");
             return this;
         }
-
-
-
         private void projectNode(Record node){
             String node_name = Graph.getNodeName(node);
             String node_type = Graph.getNodeType(node);
@@ -223,6 +218,7 @@ public class Graph {
             }
         }
 
+
         public Builder projectGraph(){
             for(Record node: this.topologicalNodes){
                 this.projectNode(node);
@@ -231,7 +227,6 @@ public class Graph {
             this.printDecisions();
             return this;
         }
-
         private void printDecisions(){
             System.out.println("\n----- ALL DECISIONS -----");
             for(String key: this.decisions.keySet()){
@@ -239,6 +234,7 @@ public class Graph {
             }
             System.out.println("-------------------------\n");
         }
+
 
         public Graph build(){
             Graph build             = new Graph();
