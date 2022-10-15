@@ -24,8 +24,8 @@ services:
         source: .
         target: /decisions
     environment:
-      - AWS_ACCESS_KEY_ID=AKIAJVM34C5MCCWRJCCQ
-      - AWS_SECRET_ACCESS_KEY=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
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
       - AWS_STACK_ENDPOINT=http://mock-sqs:9324
       - NEO4J_URI=neo4j://neo4j:7687
       - NEO4J_USER=neo4j
