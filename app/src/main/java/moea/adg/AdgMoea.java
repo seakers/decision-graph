@@ -4,15 +4,18 @@ import app.Files;
 import app.Runs;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import graph.Graph;
 import moea.vanilla.TdrsCrossover;
+import moea.vanilla.TdrsFullSolution;
 import moea.vanilla.TdrsSolution;
 import org.moeaframework.algorithm.EpsilonMOEA;
+import org.moeaframework.algorithm.NSGAII;
 import org.moeaframework.core.*;
 import org.moeaframework.core.comparator.ChainedComparator;
+import org.moeaframework.core.comparator.CrowdingComparator;
+import org.moeaframework.core.comparator.ParetoDominanceComparator;
 import org.moeaframework.core.comparator.ParetoObjectiveComparator;
 import org.moeaframework.core.operator.InjectedInitialization;
 import org.moeaframework.core.operator.TournamentSelection;
@@ -49,24 +52,24 @@ public class AdgMoea implements Runnable{
         public Graph graph;
         private int pop_size;
         private int nfe;
-        private double crossover_prob;
-        private double mutation_prob;
         private int num_objectives;
         private List<Solution> population;
-
 
         public Builder(Graph graph){
             this.population = new ArrayList<>();
             this.graph = graph;
         }
 
-        public Builder setProperties(int nfe, double crossover_prob, double mutation_prob, int num_objectives){
+        public Builder setProperties(int nfe, int num_objectives){
             this.nfe = nfe;
-            this.crossover_prob = crossover_prob;
-            this.mutation_prob = mutation_prob;
             this.num_objectives = num_objectives;
             return this;
         }
+
+
+        // ---------------------------
+        // --- STARTING POPULATION ---
+        // ---------------------------
 
         public Builder buildPopulaiton(int pop_size){
             if(System.getenv("LOAD_POP").equals("TRUE")){
@@ -89,7 +92,8 @@ public class AdgMoea implements Runnable{
                     solution = new AdgSolution(this.graph, this.num_objectives);
                 }
                 else{
-                    solution = new TdrsSolution(this.num_objectives);
+                    // solution = new TdrsSolution(this.num_objectives);
+                    solution = new TdrsFullSolution(this.num_objectives);
                 }
 
                 this.population.add(solution);
@@ -121,7 +125,41 @@ public class AdgMoea implements Runnable{
         }
 
 
-        private EpsilonMOEA initialize(Problem adg_problem){
+        // ----------------------
+        // --- ALGORITHM TYPE ---
+        // ----------------------
+
+        public Algorithm initializeNSGAII(Problem adg_problem){
+
+
+            InjectedInitialization initialization = new InjectedInitialization(adg_problem, this.population.size(), this.population);
+
+            TournamentSelection selection = new TournamentSelection(2,
+                    new ChainedComparator(
+                            new ParetoDominanceComparator(),
+                            new CrowdingComparator()
+                    ));
+
+            // VANILLA CHANGE
+            Variation var;
+            if(System.getenv("RUN_TYPE").equals("ADG")){
+                var = new AdgCrossover(this.graph, this.num_objectives);
+            }
+            else{
+                var = new TdrsCrossover(this.num_objectives);
+            }
+
+            return new NSGAII(
+                    adg_problem,
+                    new NondominatedSortingPopulation(),
+                    null,
+                    selection,
+                    var,
+                    initialization
+            );
+        }
+
+        private EpsilonMOEA initializeMOEA(Problem adg_problem){
 
             InjectedInitialization initialization = new InjectedInitialization(adg_problem, this.population.size(), this.population);
 
@@ -135,7 +173,7 @@ public class AdgMoea implements Runnable{
             // VANILLA CHANGE
             Variation var;
             if(System.getenv("RUN_TYPE").equals("ADG")){
-                var = new AdgCrossover(this.graph, this.num_objectives, this.mutation_prob);
+                var = new AdgCrossover(this.graph, this.num_objectives);
             }
             else{
                 var = new TdrsCrossover(this.num_objectives);
@@ -144,13 +182,15 @@ public class AdgMoea implements Runnable{
             return new EpsilonMOEA(adg_problem, population, archive, selection, var, initialization);
         }
 
+
         public AdgMoea build(){
             AdgMoea build = new AdgMoea();
             build.graph = graph;
             build.population = this.population;
             build.adg_problem = new AdgProblem(this.graph, this.num_objectives);
             build.num_objectives = this.num_objectives;
-            build.moea = this.initialize(build.adg_problem);
+            // build.moea = this.initializeMOEA(build.adg_problem);
+            build.moea = this.initializeNSGAII(build.adg_problem);
             build.nfe = this.nfe;
 
             AdgMoea.instance = build;
@@ -165,7 +205,7 @@ public class AdgMoea implements Runnable{
     private double crossover_prob;
     private double mutation_prob;
     private int num_objectives;
-    private EpsilonMOEA     moea;
+    private Algorithm     moea;
     private List<Solution> population;
     private Problem adg_problem;
 

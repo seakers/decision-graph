@@ -3,6 +3,7 @@ package moea.vanilla;
 import moea.adg.AdgSolution;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.Variation;
+import moea.vanilla.TdrsFullSolution;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -25,8 +26,8 @@ public class TdrsCrossover implements Variation {
         Solution result2 = parents[1].copy();
 
         // CAST APPROPRIATELY
-        TdrsSolution res1 = (TdrsSolution) result1;
-        TdrsSolution res2 = (TdrsSolution) result2;
+        TdrsFullSolution res1 = (TdrsFullSolution) result1;
+        TdrsFullSolution res2 = (TdrsFullSolution) result2;
 
         ArrayList<Integer> papa = res1.design;
         ArrayList<Integer> mama = res2.design;
@@ -44,8 +45,8 @@ public class TdrsCrossover implements Variation {
 
         // CREATE CHILD
         // RANDOM CHANGE
-        // TdrsSolution child_design = new TdrsSolution(this.num_objectives);
-        TdrsSolution child_design = new TdrsSolution(this.num_objectives, child);
+        // TdrsFullSolution child_design = new TdrsFullSolution(this.num_objectives);
+        TdrsFullSolution child_design = new TdrsFullSolution(this.num_objectives, child);
         child_design.mutateDesign();
 
         // RETURN CHILD

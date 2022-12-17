@@ -32,7 +32,7 @@ public class AdgSearch  implements Callable<Algorithm> {
         this.is_stopped = false;
         this.analyzer = new Analyzer()
                 .withProblem(this.alg.getProblem())
-                .withIdealPoint(-1.1, -0.1)
+                .withIdealPoint(-1.1, 0.0)
                 .withReferencePoint(0, 20000)
                 .includeHypervolume()
                 .includeAdditiveEpsilonIndicator();
@@ -49,14 +49,15 @@ public class AdgSearch  implements Callable<Algorithm> {
         alg.step();
         this.updateAnalysis();
 
-        Population current_pop = new Population(((AbstractEvolutionaryAlgorithm)alg).getArchive());
+        // Population current_pop = new Population(((AbstractEvolutionaryAlgorithm)alg).getArchive());
+        Population current_pop = new Population(((AbstractEvolutionaryAlgorithm)this.alg).getPopulation());
         while (!alg.isTerminated() && (alg.getNumberOfEvaluations() < this.nfe) && !this.is_stopped){
 
             // --> Step algorithm
             alg.step();
 
             // --> Get new population / update
-            Population new_pop = ((AbstractEvolutionaryAlgorithm)alg).getArchive();
+            Population new_pop = ((AbstractEvolutionaryAlgorithm)alg).getPopulation();
             if(this.new_design_check(current_pop, new_pop)){
                 System.out.println("--> NEW DESIGN FOUND");
             }
@@ -67,7 +68,7 @@ public class AdgSearch  implements Callable<Algorithm> {
         }
 
         // --> Record run
-        NondominatedPopulation final_pop = ((AbstractEvolutionaryAlgorithm) alg).getArchive();
+        Population final_pop = ((AbstractEvolutionaryAlgorithm) alg).getPopulation();
         Runs.writeRun(this.analyzer, this.accumulator, final_pop, this.nfe);
 
         return this.alg;

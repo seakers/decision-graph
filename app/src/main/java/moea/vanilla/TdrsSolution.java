@@ -119,7 +119,7 @@ public class TdrsSolution extends Solution {
                 }
                 else{
                     if(this.design.get(pa_idx) == 0){
-                        this.design.set(pa_idx, this.rand.nextInt(3) + 1);
+                        this.design.set(pa_idx, 1);
                     }
                 }
                 pa_idx++;
@@ -200,7 +200,6 @@ public class TdrsSolution extends Solution {
             }
             pay_alloc.add(this.repair_partition(broken).intArray2LongDec());
         }
-
         return pay_alloc;
     }
 

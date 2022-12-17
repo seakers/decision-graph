@@ -9,5 +9,6 @@ debug
 neo4j
 visualizations/__pycache__
 results
+results_old
 .idea
 

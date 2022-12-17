@@ -8,10 +8,12 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import moea.adg.AdgSolution;
+import moea.vanilla.TdrsFullSolution;
 import moea.vanilla.TdrsSolution;
 import org.moeaframework.Analyzer;
 import org.moeaframework.analysis.collector.Accumulator;
 import org.moeaframework.core.NondominatedPopulation;
+import org.moeaframework.core.Population;
 import org.moeaframework.core.Solution;
 
 import java.io.File;
@@ -50,9 +52,7 @@ public class Runs {
         System.out.println(results_path);
         Files.createDir(results_path);
 
-        // RUNGROUP CHANGE
-        int group_num = new File(results_path).list().length;
-        // String group_dir_name = "group_" + group_num;
+        // RUN GROUP CHANGE
         String group_dir_name = System.getenv("RUN_GROUP");
 
         Runs.group_path = Paths.get(results_path, group_dir_name).toString();
@@ -111,7 +111,7 @@ public class Runs {
         Runs.run_path = run_path;
     }
 
-    public static void writeRun(Analyzer analyzer, Accumulator accumulator, NondominatedPopulation final_pop, int nfe){
+    public static void writeRun(Analyzer analyzer, Accumulator accumulator, Population final_pop, int nfe){
 
         // --> 1. Save population
         Runs.writePopulation(final_pop, Runs.run_path);
@@ -135,7 +135,7 @@ public class Runs {
         }
     }
     
-    public static void writePopulation(NondominatedPopulation population, String run_path){
+    public static void writePopulation(Population population, String run_path){
         String pop_file = Paths.get(run_path, "population.json").toString();
         JsonArray designs   = new JsonArray();
         try{
@@ -186,8 +186,8 @@ public class Runs {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             FileWriter outputfile = new FileWriter(pop_file);
             for(Solution item: population){
-                if(item instanceof TdrsSolution){
-                    TdrsSolution solution = (TdrsSolution) item;
+                if(item instanceof TdrsFullSolution){
+                    TdrsFullSolution solution = (TdrsFullSolution) item;
                     designs.add(solution.getTdrsDesignJson());
                 }
                 else if(item instanceof AdgSolution){

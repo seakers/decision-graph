@@ -5,9 +5,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import moea.adg.AdgProblem;
 import moea.adg.AdgSolution;
+import moea.vanilla.TdrsFullSolution;
 import moea.vanilla.TdrsSolution;
 import org.moeaframework.core.Solution;
-import scan.EvaluatorWrapper;
+import scan.wrapper.ScanWrapper;
 import scan.elements.Architecture;
 import scan.utils.NumArray;
 
@@ -27,42 +28,45 @@ public class TdrsEvaluator {
     public static class Builder{
         public TdrsEvaluator build(){
             TdrsEvaluator build = new TdrsEvaluator();
-            build.evaluator = new EvaluatorWrapper();
+            build.evaluator = new ScanWrapper("/scan/TestCase_wgs.INPUTS");
             build.gson = new Gson();
             TdrsEvaluator.instance = build;
             return build;
         }
     }
 
-    public EvaluatorWrapper evaluator = null;
+    public ScanWrapper evaluator = null;
     public Gson gson;
 
 
     public ArrayList<Double> evaluateVanilla(Solution abstract_soln){
-        TdrsSolution solution = (TdrsSolution) abstract_soln;
+        TdrsFullSolution solution = (TdrsFullSolution) abstract_soln;
 
-        System.out.println("--> DESIGN TO EVAL: " + solution.design);
-        NumArray pay_assignment = solution.getPayloadAssignment();
-        ArrayList<Long> pay_alloc = solution.getPayloadAllocation();
-        String procurement_string = solution.getProcurementInfo();
+        solution.validateDesign();
+        solution.print();
 
-        // -----------------------------
-        // ----- EVALUATE / RETURN -----
-        // -----------------------------
-        System.out.println("--> ANTENNA ASSIGNMENT: " + pay_assignment);
-        System.out.println("--> ANTENNA PARTITIONING: " + pay_alloc);
-        Architecture arch = new Architecture();
-        try{
-
-            arch.setVariable( "id", "sm" + 1 );
-            arch.setVariable("payload-assignment", pay_assignment);
-            arch.setVariable("payload-allocation", pay_alloc);
-            arch.setVariable("contract-modalities", procurement_string);
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-        }
-        return this.evaluator.evaluate(arch);
+//        System.out.println("--> DESIGN TO EVAL: " + solution.design);
+//        NumArray pay_assignment = solution.getPayloadAssignment();
+//        ArrayList<Long> pay_alloc = solution.getPayloadAllocation();
+//        String procurement_string = solution.getProcurementInfo();
+//
+//        // -----------------------------
+//        // ----- EVALUATE / RETURN -----
+//        // -----------------------------
+//        System.out.println("--> ANTENNA ASSIGNMENT: " + pay_assignment);
+//        System.out.println("--> ANTENNA PARTITIONING: " + pay_alloc);
+//        Architecture arch = new Architecture();
+//        try{
+//
+//            arch.setVariable( "id", "sm" + 1 );
+//            arch.setVariable("payload-assignment", pay_assignment);
+//            arch.setVariable("payload-allocation", pay_alloc);
+//            arch.setVariable("contract-modalities", procurement_string);
+//        }
+//        catch (Exception ex){
+//            ex.printStackTrace();
+//        }
+        return this.evaluator.evaluate(solution.getArchitecture());
     }
 
 

@@ -7,9 +7,13 @@ import com.google.gson.JsonObject;
 import graph.Graph;
 import graph.neo4j.DatabaseClient;
 import moea.adg.AdgMoea;
+import moea.vanilla.TdrsFullSolution;
+import scan.elements.Architecture;
+import scan.wrapper.ScanWrapper;
 import software.amazon.awssdk.services.sqs.SqsClient;
 
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Consumer implements Runnable{
@@ -29,11 +33,6 @@ public class Consumer implements Runnable{
         public Builder(HashMap<String, String> env){
             this.env = env;
             this.sqsClient = null;
-//            this.sqsClient = SqsClient.builder()
-//                    .region(Region.US_EAST_2)
-//                    .endpointOverride(URI.create(env.get("localstackEndpoint")))
-//                    .credentialsProvider(EnvironmentVariableCredentialsProvider.create())
-//                    .build();
         }
 
         private JsonObject getAdgSpecs() throws Exception{
@@ -76,7 +75,7 @@ public class Consumer implements Runnable{
 
         // this.testCrossover();
         this.runMoea();
-
+        // this.testFunc();
 
 
         while(this.running){
@@ -88,14 +87,13 @@ public class Consumer implements Runnable{
 
 
 
-
     public void runMoea(){
         int pop_size = Runs.pop_size;
         int nfe = Runs.nfe;
         int num_objectives = 2;
 
         AdgMoea moea = new AdgMoea.Builder(this.graph)
-                .setProperties(nfe, 1.0, 0.05, num_objectives)
+                .setProperties(nfe, num_objectives)
                 .buildPopulaiton(pop_size)
                 .build();
         try {
@@ -124,6 +122,33 @@ public class Consumer implements Runnable{
     }
 
 
+    public void testFunc(){
+        ScanWrapper wrapper = new ScanWrapper("/scan/TestCase_wgs.INPUTS");
+
+        System.out.println("--> TESTING");
+
+        try{
+            for(int x = 0; x < 1; x++){
+                TdrsFullSolution test_soln = new TdrsFullSolution(2);
+                test_soln.validateDesign();
+                test_soln.print();
+                Architecture arch = test_soln.getArchitecture();
+                if(!arch.checkConsistency()) {
+                    System.out.println( "Inconsistent random architecture: " + arch);
+                    System.exit(0);
+                }
+                ArrayList<Double> results = wrapper.evaluate(arch);
+                System.out.println(results);
+            }
+
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+
+        System.out.println("--> NO INCONSISTENT ARCHITECTURES");
+    }
 
 
 }

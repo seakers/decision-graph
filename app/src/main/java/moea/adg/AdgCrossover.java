@@ -8,13 +8,12 @@ public class AdgCrossover implements Variation {
 
     private Graph graph;
     private int num_objectives;
-    private double mutation_prob;
+    private double mutation_prob = 0.5;
 
 
-    public AdgCrossover(Graph graph, int num_objectives, double mutation_prob){
+    public AdgCrossover(Graph graph, int num_objectives){
         this.graph = graph;
         this.num_objectives = num_objectives;
-        this.mutation_prob = mutation_prob;
     }
 
     @Override

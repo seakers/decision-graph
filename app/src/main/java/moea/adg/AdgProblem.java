@@ -2,6 +2,7 @@ package moea.adg;
 
 import evaluation.TdrsEvaluator;
 import graph.Graph;
+import moea.vanilla.TdrsFullSolution;
 import moea.vanilla.TdrsSolution;
 import org.moeaframework.core.Solution;
 import org.moeaframework.problem.AbstractProblem;
@@ -94,7 +95,7 @@ public class AdgProblem extends AbstractProblem {
             solution = new AdgSolution(this.graph, this.num_objectives);
         }
         else{
-            solution = new TdrsSolution(this.num_objectives);
+            solution = new TdrsFullSolution(this.num_objectives);
         }
 
         return solution;
