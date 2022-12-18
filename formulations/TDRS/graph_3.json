@@ -1,0 +1,68 @@
+{
+  "decisions": [
+    {
+      "name": "Antenna Assignment",
+      "type": "Assigning"
+    },
+    {
+      "name": "Antenna Partitioning",
+      "type": "Partitioning",
+      "options": "cluster"
+    },
+    {
+      "name": "Contract Modalities",
+      "type": "StandardForm"
+    },
+    {
+      "name": "Network Types",
+      "type": "StandardForm"
+    },
+    {
+      "name": "Ground Stations",
+      "type": "DownSelecting"
+    },
+    {
+      "name": "Frac Strategy",
+      "type": "StandardForm"
+    }
+  ],
+  "edges":[
+    {
+      "parent": "Root",
+      "child": "Antenna Assignment",
+      "operates_on": "constellations",
+      "type": "TO"
+    },
+    {
+      "parent": "Root",
+      "child": "Antenna Assignment",
+      "operates_on": "antennas",
+      "type": "FROM"
+    },
+    {
+      "parent": "Root",
+      "child": "Ground Stations",
+      "operates_on": "ground-stations"
+    },
+    {
+      "parent": "Root",
+      "child": "Frac Strategy",
+      "operates_on": "frac-strategy"
+    },
+    {
+      "parent": "Antenna Assignment",
+      "child": "Antenna Partitioning",
+      "operates_on": "antennas"
+    },
+    {
+      "parent": "Antenna Assignment",
+      "child": "Contract Modalities",
+      "operates_on": "contract-modalities"
+    },
+    {
+      "parent": "Antenna Assignment",
+      "child": "Network Types",
+      "operates_on": "network-types"
+    }
+  ]
+}

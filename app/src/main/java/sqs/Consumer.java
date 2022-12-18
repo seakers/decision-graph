@@ -3,7 +3,9 @@ package sqs;
 import app.Files;
 import app.Runs;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import graph.Graph;
 import graph.neo4j.DatabaseClient;
 import moea.adg.AdgMoea;
@@ -76,6 +78,7 @@ public class Consumer implements Runnable{
         // this.testCrossover();
         this.runMoea();
         // this.testFunc();
+//        this.testfunc2();
 
 
         while(this.running){
@@ -84,6 +87,35 @@ public class Consumer implements Runnable{
     }
 
 
+    public void testfunc2() {
+
+        try {
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+            int design_idx = this.graph.generateRandomDesign();
+            JsonObject antenna_assignment = this.graph.getDesignDecision(design_idx, "Antenna Assignment");
+            JsonObject antenna_partitioning = this.graph.getDesignDecision(design_idx, "Antenna Partitioning");
+            JsonObject contract_modalities = this.graph.getDesignDecision(design_idx, "Contract Modalities");
+            JsonObject network_types = this.graph.getDesignDecision(design_idx, "Network Types");
+            JsonObject ground_station = this.graph.getDesignDecision(design_idx, "Ground Stations");
+            JsonObject frac_strategy = this.graph.getDesignDecision(design_idx, "Frac Strategy");
+
+
+
+            ArrayList<Integer> aa_chromosome = gson.fromJson(antenna_assignment.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+
+
+
+            System.out.println(gson.toJson(ground_station));
+
+
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
 
 

@@ -1,7 +1,7 @@
 {
   "constellations": [
     {
-      "name": "GEOa-1-1",
+      "name": "GEOa-1-3",
       "contract-modalities": [
         {
           "name": "procurement"
@@ -16,11 +16,19 @@
         },
         {
           "name": "no"
+        }
+      ],
+      "network-types": [
+        {
+          "name": "bent-pipe"
+        },
+        {
+          "name": "circuit-switched"
         }
       ]
     },
     {
-      "name": "GEOb-1-1",
+      "name": "GEOb-1-3",
       "contract-modalities": [
         {
           "name": "procurement"
@@ -35,11 +43,19 @@
         },
         {
           "name": "no"
+        }
+      ],
+      "network-types": [
+        {
+          "name": "bent-pipe"
+        },
+        {
+          "name": "circuit-switched"
         }
       ]
     },
     {
-      "name": "GEOc-1-1",
+      "name": "GEOc-1-3",
       "contract-modalities": [
         {
           "name": "procurement"
@@ -54,6 +70,68 @@
         },
         {
           "name": "no"
+        }
+      ],
+      "network-types": [
+        {
+          "name": "bent-pipe"
+        },
+        {
+          "name": "circuit-switched"
+        }
+      ]
+    },
+    {
+      "name": "MEO-2-5",
+      "contract-modalities": [
+        {
+          "name": "procurement"
+        },
+        {
+          "name": "hosted-payloads"
+        }
+      ],
+      "isl-payloads": [
+        {
+          "name": "yes"
+        },
+        {
+          "name": "no"
+        }
+      ],
+      "network-types": [
+        {
+          "name": "bent-pipe"
+        },
+        {
+          "name": "circuit-switched"
+        }
+      ]
+    },
+    {
+      "name": "MEO-3-3",
+      "contract-modalities": [
+        {
+          "name": "procurement"
+        },
+        {
+          "name": "hosted-payloads"
+        }
+      ],
+      "isl-payloads": [
+        {
+          "name": "yes"
+        },
+        {
+          "name": "no"
+        }
+      ],
+      "network-types": [
+        {
+          "name": "bent-pipe"
+        },
+        {
+          "name": "circuit-switched"
         }
       ]
     }
@@ -67,6 +145,22 @@
     },
     {
       "name": "SA2"
+    }
+  ],
+  "ground-stations": [
+    {
+      "name": "White-Sands"
+    },
+    {
+      "name": "Guam"
+    }
+  ],
+  "frac-strategy": [
+    {
+      "name": "all-mothers"
+    },
+    {
+      "name": "mother-daughter"
     }
   ]
 }

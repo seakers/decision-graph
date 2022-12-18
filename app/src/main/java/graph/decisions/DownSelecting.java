@@ -341,6 +341,11 @@ public class DownSelecting extends Decision {
                     }
                 }
             }
+
+            // --> Ensure at least one option is selected
+            if(!chromosome.contains(1)){
+                chromosome.set(this.rand.nextInt(chromosome.size()), 1);
+            }
             sub_decision.add("chromosome", this.gson.toJsonTree(chromosome).getAsJsonArray().deepCopy());
         }
     }

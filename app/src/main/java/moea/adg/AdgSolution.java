@@ -3,6 +3,7 @@ package moea.adg;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import graph.Graph;
@@ -87,7 +88,7 @@ public class AdgSolution extends Solution {
         NumArray pay_assignment = new NumArray();
 
         int idx = 0;
-        for(int x = 0; x < 3; x++){
+        for(int x = 0; x < 5; x++){
             String num = "";
             for(int y = 0; y < 3; y++){
                 num += antenna_assignment.get(idx);
@@ -106,8 +107,11 @@ public class AdgSolution extends Solution {
         ArrayList<Long> pay_alloc = new ArrayList<Long>();
         ArrayList<String> keys = new ArrayList<>();
         keys.add("1");
-        keys.add("6");
-        keys.add("11");
+        keys.add("8");
+        keys.add("15");
+        keys.add("22");
+        keys.add("29");
+
         for(int x = 0; x < keys.size(); x++){
             String key = keys.get(x);
             NumArray tmp = new NumArray();
@@ -129,22 +133,85 @@ public class AdgSolution extends Solution {
         return pay_alloc;
     }
 
-    public String getProcurementInfo(){
+    public ArrayList<String> getProcurementInfo(){
         JsonObject sf_decision = this.getDesignDecision("Contract Modalities");
         String procurement_string = "";
         ArrayList<String> keys = new ArrayList<>();
         keys.add("1");
-        keys.add("6");
-        keys.add("11");
+        keys.add("8");
+        keys.add("15");
+        keys.add("22");
+        keys.add("29");
+        ArrayList<String> sf_values = new ArrayList<>();
+
         for(String key: keys){
             if(sf_decision.has(key)){
+                sf_values.add(sf_decision.getAsJsonObject(key).getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString());
                 procurement_string += (" " + sf_decision.getAsJsonObject(key).getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString());
             }
             else{
                 procurement_string += " N/A";
+                sf_values.add("N/A");
             }
         }
-        return procurement_string;
+        return sf_values;
+    }
+
+    public ArrayList<String> getNetworkTypes(){
+        JsonObject sf_decision = this.getDesignDecision("Network Types");
+        String procurement_string = "";
+        ArrayList<String> keys = new ArrayList<>();
+        keys.add("1");
+        keys.add("8");
+        keys.add("15");
+        keys.add("22");
+        keys.add("29");
+
+        ArrayList<String> sf_values = new ArrayList<>();
+
+        for(String key: keys){
+            if(sf_decision.has(key)){
+                sf_values.add(sf_decision.getAsJsonObject(key).getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString());
+//                procurement_string += (" " + sf_decision.getAsJsonObject(key).getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString());
+            }
+            else{
+                procurement_string += " 0";
+                sf_values.add("0");
+            }
+        }
+        return sf_values;
+    }
+
+    public ArrayList<String> getGroundStations(){
+        Gson gson = new Gson();
+        JsonObject assignment_decision = this.getDesignDecision("Ground Stations");
+        JsonObject gs_obj = assignment_decision.getAsJsonObject("0");
+
+        ArrayList<Integer> chromosome_list = gson.fromJson(gs_obj.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+        ArrayList<String> gs_string_list = new ArrayList<>();
+
+//        if(chromosome_list.get(0) == 1){
+//            gs_string_list.add("White-Sands");
+//        }
+//        if(chromosome_list.get(1) == 1){
+//            gs_string_list.add("Guam");
+//        }
+
+        for(JsonElement element: gs_obj.getAsJsonArray("ref")){
+            gs_string_list.add(element.getAsJsonObject().get("name").getAsString());
+        }
+
+
+        return gs_string_list;
+    }
+
+    public String getFracStrategy(){
+        Gson gson = new Gson();
+        JsonObject assignment_decision = this.getDesignDecision("Frac Strategy");
+        JsonObject gs_obj = assignment_decision.getAsJsonObject("0");
+
+        String strategy = gs_obj.getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString();
+        return strategy;
     }
 
 
@@ -164,8 +231,10 @@ public class AdgSolution extends Solution {
         JsonObject partitioning_decision = this.getDesignDecision("Antenna Partitioning");
         ArrayList<String> keys = new ArrayList<>();
         keys.add("1");
-        keys.add("6");
-        keys.add("11");
+        keys.add("8");
+        keys.add("15");
+        keys.add("22");
+        keys.add("29");
         for(int x = 0; x < keys.size(); x++){
             String key = keys.get(x);
             if(partitioning_decision.keySet().contains(key)){
@@ -178,13 +247,13 @@ public class AdgSolution extends Solution {
 
                 int count = 0;
                 for(Integer var: sub_chromosome){
-                    if(ref_uids.get(count).equals("16")){
+                    if(ref_uids.get(count).equals("36")){
                         design_bits.set(design_bits.size()-3, var);
                     }
-                    else if(ref_uids.get(count).equals("17")){
+                    else if(ref_uids.get(count).equals("37")){
                         design_bits.set(design_bits.size()-2, var);
                     }
-                    else if(ref_uids.get(count).equals("18")){
+                    else if(ref_uids.get(count).equals("38")){
                         design_bits.set(design_bits.size()-1, var);
                     }
                     count++;
@@ -200,9 +269,11 @@ public class AdgSolution extends Solution {
         // --> 3. Contract Modality Bits
         JsonObject sf_decision = this.getDesignDecision("Contract Modalities");
         ArrayList<String> keys2 = new ArrayList<>();
-        keys2.add("1");
-        keys2.add("6");
-        keys2.add("11");
+        keys.add("1");
+        keys.add("8");
+        keys.add("15");
+        keys.add("22");
+        keys.add("29");
         for(int x = 0; x < keys2.size(); x++){
             String key = keys2.get(x);
             if(sf_decision.has(key)){
