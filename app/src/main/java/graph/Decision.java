@@ -47,7 +47,7 @@ public class Decision {
     protected Random                    rand;
     protected String                    debug_dir;
 
-    protected double                    flip_probability = 1.0 / 32.0; // was 1/18
+    protected double                    flip_probability = 1.0 / 45.0; // was 1/18
 
 
 //     ____        _ _     _
