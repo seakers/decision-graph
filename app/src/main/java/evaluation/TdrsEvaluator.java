@@ -71,6 +71,8 @@ public class TdrsEvaluator {
 
 
     public ArrayList<Double> evaluateAdg(Solution abstract_soln){
+        System.out.println("--> EVALUATING ADG SOLUTION");
+
         AdgSolution solution = (AdgSolution) abstract_soln;
 
         // ------------------------------
@@ -108,6 +110,25 @@ public class TdrsEvaluator {
         String frac_strategy = solution.getFracStrategy();
 
 
+        // --------------------------------
+        // ----- USER GROUND STATIONS -----
+        // --------------------------------
+        ArrayList<String> user_gs = solution.getUserGroundStations();
+
+        // ---------------------------
+        // ----- NUM GS ANTENNAS -----
+        // ---------------------------
+        ArrayList<String> num_user_gs_antennas = solution.getNumAntennas();
+        if(user_gs.isEmpty()){
+            num_user_gs_antennas = new ArrayList<>();
+        }
+
+        // ------------------------
+        // ----- ISL PAYLOADS -----
+        // ------------------------
+        ArrayList<Integer> isl_payloads = solution.getISLPayloads();
+
+
 
         // -----------------------------
         // ----- EVALUATE / RETURN -----
@@ -118,6 +139,9 @@ public class TdrsEvaluator {
         System.out.println("--> CONTRACT MODALITIES: " + procurement_string);
         System.out.println("--> GROUND STATIONS: " + ground_stations);
         System.out.println("--> FRAC STRATEGY: " + frac_strategy);
+        System.out.println("--> USER GROUND STATIONS: " + user_gs);
+        System.out.println("--> NUM GS ANTENNAS: " + num_user_gs_antennas);
+        System.out.println("--> ISL PAYLOADS: " + isl_payloads);
         Architecture arch = new Architecture();
         try{
             arch.setVariable( "id", "sm" + 1 );
@@ -127,14 +151,22 @@ public class TdrsEvaluator {
             arch.setVariable("contract-modalities", procurement_string);
             arch.setVariable("ground-stations", ground_stations );
             arch.setVariable("fractionation-strategy", frac_strategy );
+            arch.setVariable("user-ground-stations", user_gs );
+            arch.setVariable("number-antennas-user-gs", num_user_gs_antennas );
+            arch.setVariable("isl-payloads", isl_payloads );
             if(!arch.checkConsistency()){
                 throw new Exception("INCONSISTENT ARCHITECTURE");
             }
+//            System.out.println(arch);
         }
         catch (Exception ex){
             ex.printStackTrace();
         }
-        return this.evaluator.evaluate(arch);
+
+        ArrayList<Double> results = this.evaluator.evaluate(arch);
+//        System.out.println("--> RESULTS: " + results);
+//        System.exit(0);
+        return results;
     }
 
 

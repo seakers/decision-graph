@@ -19,7 +19,7 @@ problem_dir = os.path.join(results_dir, 'TDRS')
 group_0 = os.path.join(problem_dir, 'group_0', 'runs') # VANILLA
 group_1 = os.path.join(problem_dir, 'group_1', 'runs') # ADG
 group_2 = os.path.join(problem_dir, 'group_2', 'runs') # EXPERT
-# group_3 = os.path.join(problem_dir, 'group_3', 'runs') # ADG-HIGH-MUTATION
+group_3 = os.path.join(problem_dir, 'group_3', 'runs') # ADG-HIGH-MUTATION
 # group_4 = os.path.join(problem_dir, 'group_4', 'runs')
 
 
@@ -60,9 +60,9 @@ def run_multi_analysis():
 
     runs = [
         (group_0, 'VANILLA'),
-        (group_1, 'ADG'),
-        (group_2, 'EXPERT'),
-        # (group_3, 'VANILLA 2')
+        (group_1, 'ADG 1/16'),
+        (group_2, 'ADG 1/32'),
+        (group_3, 'ADG 1/45')
     ]
     get_hv_plot_multi(runs)
 

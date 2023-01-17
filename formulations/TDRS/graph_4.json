@@ -1,0 +1,95 @@
+{
+  "decisions": [
+    {
+      "name": "Antenna Assignment",
+      "type": "Assigning"
+    },
+    {
+      "name": "Antenna Partitioning",
+      "type": "Partitioning",
+      "options": "cluster"
+    },
+    {
+      "name": "Contract Modalities",
+      "type": "StandardForm"
+    },
+    {
+      "name": "Network Types",
+      "type": "StandardForm"
+    },
+    {
+      "name": "Ground Stations",
+      "type": "DownSelecting"
+    },
+    {
+      "name": "Frac Strategy",
+      "type": "StandardForm"
+    },
+    {
+      "name": "ISL Payloads",
+      "type": "StandardForm"
+    },
+    {
+      "name": "User Ground Stations",
+      "type": "StandardForm"
+    },
+    {
+      "name": "Num Ground Station Antennas",
+      "type": "StandardForm"
+    }
+  ],
+  "edges":[
+    {
+      "parent": "Root",
+      "child": "Antenna Assignment",
+      "operates_on": "constellations",
+      "type": "TO"
+    },
+    {
+      "parent": "Root",
+      "child": "Antenna Assignment",
+      "operates_on": "antennas",
+      "type": "FROM"
+    },
+    {
+      "parent": "Root",
+      "child": "Ground Stations",
+      "operates_on": "ground-stations"
+    },
+    {
+      "parent": "Root",
+      "child": "User Ground Stations",
+      "operates_on": "user-ground-stations"
+    },
+    {
+      "parent": "User Ground Stations",
+      "child": "Num Ground Station Antennas",
+      "operates_on": "num-antennas"
+    },
+    {
+      "parent": "Root",
+      "child": "Frac Strategy",
+      "operates_on": "frac-strategy"
+    },
+    {
+      "parent": "Antenna Assignment",
+      "child": "Antenna Partitioning",
+      "operates_on": "antennas"
+    },
+    {
+      "parent": "Antenna Assignment",
+      "child": "Contract Modalities",
+      "operates_on": "contract-modalities"
+    },
+    {
+      "parent": "Antenna Assignment",
+      "child": "Network Types",
+      "operates_on": "network-types"
+    },
+    {
+      "parent": "Antenna Assignment",
+      "child": "ISL Payloads",
+      "operates_on": "isl-payloads"
+    }
+  ]
+}

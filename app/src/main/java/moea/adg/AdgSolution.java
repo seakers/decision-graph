@@ -1,10 +1,7 @@
 package moea.adg;
 
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import graph.Graph;
 import org.moeaframework.core.Solution;
@@ -79,7 +76,7 @@ public class AdgSolution extends Solution {
 
 
 
-
+    // --> INDIVIDUAL DESIGN DECISIONS
 
     public NumArray getPayloadAssignment(){
         Gson gson = new Gson();
@@ -182,28 +179,81 @@ public class AdgSolution extends Solution {
         return sf_values;
     }
 
+    public ArrayList<Integer> getISLPayloads(){
+        JsonObject sf_decision = this.getDesignDecision("ISL Payloads");
+        ArrayList<String> keys = new ArrayList<>();
+        keys.add("1");
+        keys.add("8");
+        keys.add("15");
+        keys.add("22");
+        keys.add("29");
+        ArrayList<Integer> sf_values = new ArrayList<>();
+        for(String key: keys){
+            if(sf_decision.has(key)){
+                String name = sf_decision.getAsJsonObject(key).getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString();
+                if(name.equals("yes")){
+                    sf_values.add(1);
+                }
+                else{
+                    sf_values.add(0);
+                }
+//                procurement_string += (" " + sf_decision.getAsJsonObject(key).getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString());
+            }
+            else{
+                sf_values.add(0);
+            }
+        }
+        return sf_values;
+    }
+
     public ArrayList<String> getGroundStations(){
         Gson gson = new Gson();
-        JsonObject assignment_decision = this.getDesignDecision("Ground Stations");
-        JsonObject gs_obj = assignment_decision.getAsJsonObject("0");
-
+        JsonObject gs_decision = this.getDesignDecision("Ground Stations");
+        JsonObject gs_obj = gs_decision.getAsJsonObject("0");
         ArrayList<Integer> chromosome_list = gson.fromJson(gs_obj.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
         ArrayList<String> gs_string_list = new ArrayList<>();
-
-//        if(chromosome_list.get(0) == 1){
-//            gs_string_list.add("White-Sands");
-//        }
-//        if(chromosome_list.get(1) == 1){
-//            gs_string_list.add("Guam");
-//        }
-
         for(JsonElement element: gs_obj.getAsJsonArray("ref")){
             gs_string_list.add(element.getAsJsonObject().get("name").getAsString());
         }
-
-
         return gs_string_list;
     }
+
+    public ArrayList<String> getUserGroundStations(){
+        Gson gson = new Gson();
+        JsonObject user_gs_decision = this.getDesignDecision("User Ground Stations");
+        JsonObject gs_obj = user_gs_decision.getAsJsonObject("0");
+        ArrayList<Integer> chromosome_list = gson.fromJson(gs_obj.getAsJsonArray("chromosome"), new TypeToken<ArrayList<Integer>>(){}.getType());
+        ArrayList<String> user_gs_string_list = new ArrayList<>();
+        for(JsonElement element: gs_obj.getAsJsonArray("ref")){
+            String name = element.getAsJsonObject().get("name").getAsString();
+            if(!name.equals("None")){
+                user_gs_string_list.add(element.getAsJsonObject().get("name").getAsString());
+            }
+        }
+        return user_gs_string_list;
+    }
+
+    public ArrayList<String> getNumAntennas(){
+        JsonObject sf_decision = this.getDesignDecision("Num Ground Station Antennas");
+        ArrayList<String> keys = new ArrayList<>();
+//        Gson gson       = new GsonBuilder().setPrettyPrinting().create();
+//        System.out.println(gson.toJson(sf_decision));
+        keys.add("43");
+        keys.add("46");
+        ArrayList<String> sf_values = new ArrayList<>();
+        for(String key: keys){
+            if(sf_decision.has(key)){
+                sf_values.add(sf_decision.getAsJsonObject(key).getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString());
+//                procurement_string += (" " + sf_decision.getAsJsonObject(key).getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString());
+            }
+//            else{
+//                sf_values.add("0");
+//            }
+        }
+        return sf_values;
+    }
+
+
 
     public String getFracStrategy(){
         Gson gson = new Gson();

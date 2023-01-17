@@ -162,5 +162,29 @@
     {
       "name": "mother-daughter"
     }
+  ],
+  "user-ground-stations": [
+    {
+      "name": "Wallops",
+      "num-antennas": [
+        {
+          "name": "1"
+        },
+        {
+          "name": "2"
+        }
+      ]
+    },
+    {
+      "name": "None",
+      "num-antennas": [
+        {
+          "name": "1"
+        },
+        {
+          "name": "2"
+        }
+      ]
+    }
   ]
 }

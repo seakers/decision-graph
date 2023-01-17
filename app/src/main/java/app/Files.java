@@ -47,6 +47,7 @@ public class Files {
     public static String tdrs_formulation1 = Paths.get(Files.formulation_dir, "TDRS", "graph_1.json").toString();
     public static String tdrs_formulation2 = Paths.get(Files.formulation_dir, "TDRS", "graph_2.json").toString();
     public static String tdrs_formulation3 = Paths.get(Files.formulation_dir, "TDRS", "graph_3.json").toString();
+    public static String tdrs_formulation4 = Paths.get(Files.formulation_dir, "TDRS", "graph_4.json").toString();
     public static String tdrs_problem = Paths.get(Files.formulation_dir, "TDRS", "problems", "base.json").toString();
 
 
@@ -67,7 +68,7 @@ public class Files {
     // ----- Current Problem -----
     // ---------------------------
 
-    public static String curr_formulation = Files.tdrs_formulation3;
+    public static String curr_formulation = Files.tdrs_formulation4;
     public static String curr_problem     = Files.tdrs_problem;
     public static String curr_results     = Files.tdrs_results;
     
