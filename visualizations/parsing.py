@@ -9,8 +9,9 @@ import glob
 
 def parse_hv_files(run_dir, col_name):
     df = pd.DataFrame()
-    wildcard_path = os.path.join(run_dir, '**', 'hypervolume.txt')
+    wildcard_path = os.path.join(run_dir, '**', 'hypervolume*.txt')
     for filename in glob.iglob(wildcard_path, recursive=True):
+        print('--> FILE:', filename)
         csv_df = pd.read_csv(filename)
         # csv_df.drop(csv_df.index[csv_df['NFE'] < 50], inplace=True)
         csv_df.reset_index()
@@ -18,12 +19,24 @@ def parse_hv_files(run_dir, col_name):
     df.columns = ['NFE', col_name]
     return df
 
+
+
+
+def parse_population_files(run_dir):
+    df = pd.DataFrame()
+    wildcard_path = os.path.join(run_dir, '**', 'population*.json')
+    for filename in glob.iglob(wildcard_path, recursive=True):
+        df_fragment = parse_population_file(filename)
+        df = df.append(df_fragment, ignore_index=True)
+    return df
+
+
 def parse_population_file(pop_file):
     with open(pop_file) as d_file:
         file_data = json.load(d_file)
         data = []
         for design in file_data:
-            data.append([float(design['benefit']), float(design['cost'])])
+            data.append([float(design['benefit']) * -1, float(design['cost'])])
         df = pd.DataFrame(data, columns=['benefit', 'cost'])
         return df
 

@@ -3,7 +3,8 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 import numpy as np
 import pandas as pd
-
+from pareto_funcs import find_combined_pareto
+import os
 from parsing import parse_population_file, merge_dataframes
 
 
@@ -38,6 +39,41 @@ def scatterplot_2d_overlay(pop_file1, pop_file2):
     # fig.write_html(file_name)
     fig.show()
     return
+
+
+
+
+
+def combined_pareto_single(group_a, name_a):
+    front_a = find_combined_pareto(group_a)
+    df_a = pd.DataFrame(front_a, columns =['Benefit', 'Cost'])
+    fig = px.scatter(df_a, x='Benefit', y='Cost')
+    fig.update_layout(title_text=name_a)
+    fig.update_xaxes(range=[-0.02, 1])
+    fig.update_yaxes(range=[0, 22000])
+    fig.show()
+
+
+
+def combined_pareto_overlay(group_a, name_a, group_b, name_b):
+
+
+    front_a = find_combined_pareto(group_a)
+    front_b = find_combined_pareto(group_b)
+
+    df_a = pd.DataFrame(front_a, columns =['Benefit', 'Cost'])
+    df_b = pd.DataFrame(front_b, columns =['Benefit', 'Cost'])
+    df3 = merge_dataframes(df_a, df_b, name_a, name_b)
+
+    print(df3)
+    fig = px.scatter(df3, x='Benefit', y='Cost', color='NAME')
+    fig.update_layout(title_text='Combined Pareto Front')
+    fig.update_xaxes(range=[-0.02, 1])
+    fig.update_yaxes(range=[0, 22000])
+    fig.show()
+
+
+    return 0
 
 
 
