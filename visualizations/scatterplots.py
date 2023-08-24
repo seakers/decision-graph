@@ -67,9 +67,16 @@ def combined_pareto_overlay(group_a, name_a, group_b, name_b):
 
     print(df3)
     fig = px.scatter(df3, x='Benefit', y='Cost', color='NAME')
-    fig.update_layout(title_text='Combined Pareto Front')
+    fig.update_layout(title_text='SCAN: Combined Pareto Front Comparison', legend_title_text='Formulation')
     fig.update_xaxes(range=[-0.02, 1])
-    fig.update_yaxes(range=[0, 22000])
+    # fig.update_yaxes(range=[0, 22000])
+
+
+    fig.update_layout(title_font=dict(size=26))
+    fig.update_xaxes(title="Benefit (adimensional)", title_font=dict(size=22), tickfont=dict(size=22))
+    fig.update_yaxes(title="Cost (millions)", title_font=dict(size=22), tickfont=dict(size=22))
+    fig.update_layout(legend_title=dict(font=dict(size=22)), legend=dict(font=dict(size=22)))
+
     fig.show()
 
 

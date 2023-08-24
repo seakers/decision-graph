@@ -24,21 +24,24 @@ group_3 = os.path.join(problem_dir, 'group_3', 'runs') # ADG-HIGH-MUTATION
 
 group_4 = os.path.join(problem_dir, 'group_4', 'runs') # ADG
 group_5 = os.path.join(problem_dir, 'group_5', 'runs') # EXPERT
+group_6 = os.path.join(problem_dir, 'group_6', 'runs') # EXPERT 1000
+group_7 = os.path.join(problem_dir, 'group_7', 'runs') # ADG 1000
+group_8 = os.path.join(problem_dir, 'group_8', 'runs') # EXPERT 1000
 
 
 
 def combine_pareto():
-    group_a = group_4
+    group_a = group_7
     name_a = os.path.split(os.path.split(group_a)[0])[1]
     name_a = 'ADD_FORMULATION'
 
-    group_b = group_5
+    group_b = group_8
     name_b = os.path.split(os.path.split(group_b)[0])[1]
     name_b = 'EXPERT_FORMULATION'
 
 
-    combined_pareto_single(group_a, name_a)
-    combined_pareto_single(group_b, name_b)
+    # combined_pareto_single(group_a, name_a)
+    # combined_pareto_single(group_b, name_b)
     combined_pareto_overlay(group_a, name_a, group_b, name_b)
 
 
@@ -80,8 +83,8 @@ def run_dual_analysis():
 def run_multi_analysis():
 
     runs = [
-        (group_5, 'EXPERT_FORMULATION'),
-        (group_4, 'ADD_FORMULATION')
+        (group_8, 'EXPERT_FORMULATION'),
+        (group_7, 'ADD_FORMULATION')
     ]
     get_hv_plot_multi(runs)
 
@@ -101,6 +104,6 @@ def run_multi_analysis():
 
 
 if __name__ == '__main__':
-    run_multi_analysis()
+    # run_multi_analysis()
     combine_pareto()
 
