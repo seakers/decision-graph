@@ -362,7 +362,7 @@ public class Graph {
 //                                                                                  |___/
 
     public int crossoverDesigns(int papa, int mama, double mutation_probability) throws Exception{
-        System.out.println("--> CROSSING OVER DESIGNS: " + papa + " " + mama);
+//        System.out.println("--> CROSSING OVER DESIGNS: " + papa + " " + mama);
 
         for(Record node: this.topologicalNodes){
             String node_name = Graph.getNodeName(node);

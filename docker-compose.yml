@@ -8,7 +8,7 @@ services:
       - "7474:7474"
     volumes:
       - ./neo4j/data:/data
-      - /home/gapaza/repos/seakers/daphne/databases/neo4j_add/plugins:/plugins
+      - /home/gabe/repos/seakers/decision-graph/plugins:/plugins
     environment:
       - NEO4J_AUTH=neo4j/test
       - NEO4J_dbms_allow__upgrade=true
@@ -16,22 +16,22 @@ services:
       - NEO4J_dbms_security_procedures_unrestricted=gds.*
       - NEO4J_dbms_security_procedures_whitelist=gds.*
       - NEO4JLABS_PLUGINS='["graph-data-science"]'
-  add_engine:
-    build: .
-    image: add_server:alpha
-    volumes:
-      - type: bind
-        source: .
-        target: /decisions
-    environment:
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_STACK_ENDPOINT=http://mock-sqs:9324
-      - NEO4J_URI=neo4j://neo4j:7687
-      - NEO4J_USER=neo4j
-      - NEO4J_PASSWORD=test
-      - PROBLEM=ClimateCentric
-      - EVAL_QUEUE=add_queue
-      - VASSAR_QUEUE=http://localhost:9324/000000000000/vassar_queue
-    container_name: add_engine
-    tty: true
+#  add_engine:
+#    build: .
+#    image: add_server:alpha
+#    volumes:
+#      - type: bind
+#        source: .
+#        target: /decisions
+#    environment:
+#      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+#      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+#      - AWS_STACK_ENDPOINT=http://mock-sqs:9324
+#      - NEO4J_URI=neo4j://neo4j:7687
+#      - NEO4J_USER=neo4j
+#      - NEO4J_PASSWORD=test
+#      - PROBLEM=ClimateCentric
+#      - EVAL_QUEUE=add_queue
+#      - VASSAR_QUEUE=http://localhost:9324/000000000000/vassar_queue
+#    container_name: add_engine
+#    tty: true

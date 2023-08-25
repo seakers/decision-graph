@@ -26,19 +26,20 @@ public class Runs {
     /*
         Run Specifications
      */
-    public static int num_runs = Integer.parseInt(System.getenv("NUM_RUNS"));
-    // public static int num_runs = 20;
+//    public static int num_runs = Integer.parseInt(System.getenv("NUM_RUNS"));
+    public static int num_runs = 1;
 
-    public static int nfe = Integer.parseInt(System.getenv("NFE"));
-    // public static int nfe = 250;
+    // public static int nfe = Integer.parseInt(System.getenv("NFE"));
+    public static int nfe = 250;
 
-    public static int pop_size = Integer.parseInt(System.getenv("POP_SIZE"));
-    // public static int pop_size = 30;
+//    public static int pop_size = Integer.parseInt(System.getenv("POP_SIZE"));
+    public static int pop_size = 30;
 
-    public static String type = System.getenv("RUN_TYPE"); // ADG | VANILLA
-    // public static String type = "VANILLA"; // ADG | VANILLA
+    // public static String type = System.getenv("RUN_TYPE"); // ADG | VANILLA
+    public static String type = "ADG"; // ADG | VANILLA
 
-    public static int run_number = Integer.parseInt(System.getenv("RUN_NUMBER"));
+    // public static int run_number = Integer.parseInt(System.getenv("RUN_NUMBER"));
+    public static int run_number = 0;
 
 
 
@@ -53,7 +54,8 @@ public class Runs {
         Files.createDir(results_path);
 
         // RUN GROUP CHANGE
-        String group_dir_name = System.getenv("RUN_GROUP");
+//        String group_dir_name = System.getenv("RUN_GROUP");
+        String group_dir_name = "group_0";
 
         Runs.group_path = Paths.get(results_path, group_dir_name).toString();
         Runs.group_run_path = Paths.get(Runs.group_path, "runs").toString();
@@ -111,21 +113,21 @@ public class Runs {
         Runs.run_path = run_path;
     }
 
-    public static void writeRun(Analyzer analyzer, Accumulator accumulator, Population final_pop, int nfe){
+    public static void writeRun(Analyzer analyzer, Accumulator accumulator, Population final_pop, int run_num){
 
         // --> 1. Save population
-        Runs.writePopulation(final_pop, Runs.run_path);
+        Runs.writePopulation(final_pop, Runs.run_path, run_num);
 
         // --> 2. Save hv data
-        Runs.writeHVProgression(accumulator, Runs.run_path);
+        Runs.writeHVProgression(accumulator, Runs.run_path, run_num);
 
         analyzer.printAnalysis();
     }
 
 
 
-    public static void writeHVProgression(Accumulator accumulator, String run_path){
-        String hv_file_path = Paths.get(run_path, "hypervolume.txt").toString();
+    public static void writeHVProgression(Accumulator accumulator, String run_path, int run_num){
+        String hv_file_path = Paths.get(run_path, "hypervolume_"+Integer.toString(run_num)+".txt").toString();
         File hv_file = new File(hv_file_path);
         try{
             accumulator.saveCSV(hv_file);
@@ -135,8 +137,8 @@ public class Runs {
         }
     }
     
-    public static void writePopulation(Population population, String run_path){
-        String pop_file = Paths.get(run_path, "population.json").toString();
+    public static void writePopulation(Population population, String run_path, int run_num){
+        String pop_file = Paths.get(run_path, "population_"+Integer.toString(run_num)+".json").toString();
         JsonArray designs   = new JsonArray();
         try{
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -161,8 +163,8 @@ public class Runs {
         if(solution instanceof AdgSolution){
             AdgSolution soln = (AdgSolution) solution;
             design = soln.getDesign();
-            design.addProperty("benefit", soln.getObjective(0) * -1);
-            design.addProperty("cost", soln.getObjective(1));
+            design.addProperty("reliability", soln.getObjective(0) * -1);
+            design.addProperty("mass", soln.getObjective(1));
         }
         if(solution instanceof TdrsSolution){
             TdrsSolution soln = (TdrsSolution) solution;

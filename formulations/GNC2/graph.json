@@ -1,0 +1,92 @@
+{
+  "decisions": [
+    {
+      "name": "SensorSelection",
+      "type": "StandardForm"
+    },
+    {
+      "name": "ComputerSelection",
+      "type": "StandardForm"
+    },
+    {
+      "name": "ActuatorSelection",
+      "type": "StandardForm"
+    },
+    {
+      "name": "SensorTypeSelection",
+      "type": "StandardForm"
+    },
+    {
+      "name": "ComputerTypeSelection",
+      "type": "StandardForm"
+    },
+    {
+      "name": "ActuatorTypeSelection",
+      "type": "StandardForm"
+    },
+    {
+      "name": "SensorToComputer",
+      "type": "Assigning"
+    },
+    {
+      "name": "ComputerToActuator",
+      "type": "Assigning"
+    }
+  ],
+  "edges":[
+    {
+      "parent": "Root",
+      "child": "SensorSelection",
+      "operates_on": "sensor_count"
+    },
+    {
+      "parent": "Root",
+      "child": "ComputerSelection",
+      "operates_on": "computer_count"
+    },
+    {
+      "parent": "Root",
+      "child": "ActuatorSelection",
+      "operates_on": "actuator_count"
+    },
+    {
+      "parent": "SensorSelection",
+      "child": "SensorTypeSelection",
+      "operates_on": "sensor_type"
+    },
+    {
+      "parent": "ComputerSelection",
+      "child": "ComputerTypeSelection",
+      "operates_on": "computer_type"
+    },
+    {
+      "parent": "ActuatorSelection",
+      "child": "ActuatorTypeSelection",
+      "operates_on": "actuator_type"
+    },
+    {
+      "parent": "SensorTypeSelection",
+      "child": "SensorToComputer",
+      "operates_on": "sensors",
+      "type": "FROM"
+    },
+    {
+      "parent": "ComputerTypeSelection",
+      "child": "SensorToComputer",
+      "operates_on": "computers",
+      "type": "TO"
+    },
+    {
+      "parent": "SensorToComputer",
+      "child": "ComputerToActuator",
+      "operates_on": "computers",
+      "type": "FROM"
+    },
+    {
+      "parent": "ActuatorTypeSelection",
+      "child": "ComputerToActuator",
+      "operates_on": "actuators",
+      "type": "TO"
+    }
+  ]
+}

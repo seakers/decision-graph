@@ -1,11 +1,13 @@
 package moea.adg;
 
+import app.Runs;
 import evaluation.TdrsEvaluator;
 import graph.Graph;
 import moea.vanilla.TdrsFullSolution;
 import moea.vanilla.TdrsSolution;
 import org.moeaframework.core.Solution;
 import org.moeaframework.problem.AbstractProblem;
+import evaluation.GNC_Evaluator2;
 
 import java.util.ArrayList;
 
@@ -14,10 +16,13 @@ public class AdgProblem extends AbstractProblem {
     public Graph graph;
     public int num_objectives;
 
+    public GNC_Evaluator2 gnc_evaluator;
+
     public AdgProblem(Graph graph, int num_objectives){
         super(1, num_objectives);
         this.graph = graph;
         this.num_objectives = num_objectives;
+        this.gnc_evaluator = new GNC_Evaluator2();
     }
 
 
@@ -26,9 +31,22 @@ public class AdgProblem extends AbstractProblem {
 
         // --> 1. Evaluate if not evaluated
         if(!this.isEvaluated(sltn)){
-            this.evaluateTdrsDesign(sltn);
+            this.evaluateGncDesign(sltn);
+//            this.evaluateTdrsDesign(sltn);
             this.setEvaluated(sltn);
         }
+    }
+
+    public void evaluateGncDesign(Solution solution){
+
+        AdgSolution adg_solution = (AdgSolution) solution;
+        ArrayList<Double> results = this.gnc_evaluator.evaluate2(adg_solution.getDesign());
+
+        double mass = results.get(0);
+        double reliability = results.get(1);
+
+        solution.setObjective(0, -reliability);
+        solution.setObjective(1, mass);
     }
 
 
@@ -48,7 +66,7 @@ public class AdgProblem extends AbstractProblem {
         }
 
         // VANILLA CHANGE
-        if(System.getenv("RUN_TYPE").equals("ADG")){
+        if(Runs.type.equals("ADG")){
             results = TdrsEvaluator.getInstance().evaluateAdg(solution);
         }
         else{
@@ -91,7 +109,7 @@ public class AdgProblem extends AbstractProblem {
 
         // VANILLA CHANGE
         Solution solution;
-        if(System.getenv("RUN_TYPE").equals("ADG")){
+        if(Runs.type.equals("ADG")){
             solution = new AdgSolution(this.graph, this.num_objectives);
         }
         else{

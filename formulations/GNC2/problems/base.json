@@ -1,0 +1,71 @@
+{
+  "sensor_count": [
+    {
+      "name": "1",
+      "sensors": [
+        {"sensor_type": [{"name": "s1"},{"name": "s2"},{"name": "s3"}]}
+      ]
+    },
+    {
+      "name": "2",
+      "sensors": [
+        {"sensor_type": [{"name": "s1"},{"name": "s2"},{"name": "s3"}]},
+        {"sensor_type": [{"name": "s1"},{"name": "s2"},{"name": "s3"}]}
+      ]
+    },
+    {
+      "name": "3",
+      "sensors": [
+        {"sensor_type": [{"name": "s1"},{"name": "s2"},{"name": "s3"}]},
+        {"sensor_type": [{"name": "s1"},{"name": "s2"},{"name": "s3"}]},
+        {"sensor_type": [{"name": "s1"},{"name": "s2"},{"name": "s3"}]}
+      ]
+    }
+  ],
+  "computer_count": [
+    {
+      "name": "1",
+      "computers": [
+        {"computer_type": [{"name": "c1"},{"name": "c2"},{"name": "c3"}]}
+      ]
+    },
+    {
+      "name": "2",
+      "computers": [
+        {"computer_type": [{"name": "c1"},{"name": "c2"},{"name": "c3"}]},
+        {"computer_type": [{"name": "c1"},{"name": "c2"},{"name": "c3"}]}
+      ]
+    },
+    {
+      "name": "3",
+      "computers": [
+        {"computer_type": [{"name": "c1"},{"name": "c2"},{"name": "c3"}]},
+        {"computer_type": [{"name": "c1"},{"name": "c2"},{"name": "c3"}]},
+        {"computer_type": [{"name": "c1"},{"name": "c2"},{"name": "c3"}]}
+      ]
+    }
+  ],
+  "actuator_count": [
+    {
+      "name": "1",
+      "actuators": [
+        {"actuator_type": [{"name": "a1"},{"name": "a2"},{"name": "a3"}]}
+      ]
+    },
+    {
+      "name": "2",
+      "actuators": [
+        {"actuator_type": [{"name": "a1"},{"name": "a2"},{"name": "a3"}]},
+        {"actuator_type": [{"name": "a1"},{"name": "a2"},{"name": "a3"}]}
+      ]
+    },
+    {
+      "name": "3",
+      "actuators": [
+        {"actuator_type": [{"name": "a1"},{"name": "a2"},{"name": "a3"}]},
+        {"actuator_type": [{"name": "a1"},{"name": "a2"},{"name": "a3"}]},
+        {"actuator_type": [{"name": "a1"},{"name": "a2"},{"name": "a3"}]}
+      ]
+    }
+  ]
+}

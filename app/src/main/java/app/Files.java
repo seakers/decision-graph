@@ -17,7 +17,8 @@ public class Files {
     // ----- Root Directory -----
     // --------------------------
 
-    public static String root_dir = Paths.get("/decisions").toString();
+//    public static String root_dir = Paths.get("/decisions").toString();
+    public static String root_dir = Paths.get("/home/gabe/repos/seakers/decision-graph").toString();
     // public static String root_dir = Paths.get("/home", "gapaza", "repos", "seakers", "decision-graph").toString();
     // public static String root_dir = Paths.get("C:", "Program Files", "Cameo Systems Modeler Demo", "plugins", "adg").toString();
     // public static String root_dir = Paths.get("C:", "Users", "apaza", "repos", "seakers", "decision-graph").toString();
@@ -35,6 +36,7 @@ public class Files {
 
     public static String tdrs_results = Paths.get(Files.results_dir, "TDRS").toString();
     public static String gnc_results = Paths.get(Files.results_dir, "GNC").toString();
+    public static String gnc2_results = Paths.get(Files.results_dir, "GNC2").toString();
     public static String eoss_results = Paths.get(Files.results_dir, "EOSS").toString();
 
     // ------------------------
@@ -58,6 +60,9 @@ public class Files {
     public static String gnc_formulation3 = Paths.get(Files.formulation_dir, "GNC", "graph_3.json").toString();
     public static String gnc_problem = Paths.get(Files.formulation_dir, "GNC", "problems", "base.json").toString();
 
+    public static String gnc2_formulation  = Paths.get(Files.formulation_dir, "GNC2", "graph.json").toString();
+    public static String gnc2_problem = Paths.get(Files.formulation_dir, "GNC2", "problems", "base.json").toString();
+
 
     // --> 3. EOSS
     public static String eoss_formulation  = Paths.get(Files.formulation_dir, "EOSS", "graph.json").toString();
@@ -68,9 +73,9 @@ public class Files {
     // ----- Current Problem -----
     // ---------------------------
 
-    public static String curr_formulation = Files.tdrs_formulation4;
-    public static String curr_problem     = Files.tdrs_problem;
-    public static String curr_results     = Files.tdrs_results;
+    public static String curr_formulation = Files.gnc2_formulation;
+    public static String curr_problem     = Files.gnc2_problem;
+    public static String curr_results     = Files.gnc2_results;
     
 
 

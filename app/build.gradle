@@ -38,7 +38,7 @@ dependencies {
     // implementation fileTree('/decisions/jars') { include 'SCAN2.jar' }
 
     // implementation fileTree('C:\\Users\\apaza\\repos\\seakers\\decision-graph\\jars') { include 'SCAN_GRC2.jar' }
-    implementation fileTree('/decisions/jars') { include 'SCAN_GRC2.jar' }
+    implementation fileTree('/home/gabe/repos/seakers/decision-graph/jars') { include 'SCAN_GRC2.jar' }
 }
 
 distTar {
@@ -52,4 +52,4 @@ application {
     mainClass = 'app.App'
 }
 
-project.buildDir = '/decisions/build'
+//project.buildDir = '/decisions/build'

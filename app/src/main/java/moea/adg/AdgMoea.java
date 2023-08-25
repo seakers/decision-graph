@@ -52,12 +52,14 @@ public class AdgMoea implements Runnable{
         public Graph graph;
         private int pop_size;
         private int nfe;
+        private int run_num;
         private int num_objectives;
         private List<Solution> population;
 
-        public Builder(Graph graph){
+        public Builder(Graph graph, int run_num){
             this.population = new ArrayList<>();
             this.graph = graph;
+            this.run_num = run_num;
         }
 
         public Builder setProperties(int nfe, int num_objectives){
@@ -72,12 +74,13 @@ public class AdgMoea implements Runnable{
         // ---------------------------
 
         public Builder buildPopulaiton(int pop_size){
-            if(System.getenv("LOAD_POP").equals("TRUE")){
-                this.loadPopulation();
-            }
-            else{
-                this.generatePopulation(pop_size);
-            }
+//            if(System.getenv("LOAD_POP").equals("TRUE")){
+//                this.loadPopulation();
+//            }
+//            else{
+//                this.generatePopulation(pop_size);
+//            }
+            this.generatePopulation(pop_size);
             return this;
         }
         private void generatePopulation(int pop_size){
@@ -88,7 +91,7 @@ public class AdgMoea implements Runnable{
 
                 // VANILLA CHANGE
                 Solution solution;
-                if(System.getenv("RUN_TYPE").equals("ADG")){
+                if(Runs.type.equals("ADG")){
                     solution = new AdgSolution(this.graph, this.num_objectives);
                 }
                 else{
@@ -98,9 +101,9 @@ public class AdgMoea implements Runnable{
 
                 this.population.add(solution);
             }
-            if(System.getenv("SAVE_INITIAL_POP").equals("TRUE")){
-                Runs.writeTdrsPopulation(this.population);
-            }
+//            if(System.getenv("SAVE_INITIAL_POP").equals("TRUE")){
+//                Runs.writeTdrsPopulation(this.population);
+//            }
         }
         private void loadPopulation(){
             System.out.println("--> LOADING POPULATION");
@@ -142,7 +145,7 @@ public class AdgMoea implements Runnable{
 
             // VANILLA CHANGE
             Variation var;
-            if(System.getenv("RUN_TYPE").equals("ADG")){
+            if(Runs.type.equals("ADG")){
                 var = new AdgCrossover(this.graph, this.num_objectives);
             }
             else{
@@ -172,7 +175,7 @@ public class AdgMoea implements Runnable{
 
             // VANILLA CHANGE
             Variation var;
-            if(System.getenv("RUN_TYPE").equals("ADG")){
+            if(Runs.type.equals("ADG")){
                 var = new AdgCrossover(this.graph, this.num_objectives);
             }
             else{
@@ -192,7 +195,7 @@ public class AdgMoea implements Runnable{
             // build.moea = this.initializeMOEA(build.adg_problem);
             build.moea = this.initializeNSGAII(build.adg_problem);
             build.nfe = this.nfe;
-
+            build.run_num = this.run_num;
             AdgMoea.instance = build;
             return build;
         }
@@ -202,6 +205,7 @@ public class AdgMoea implements Runnable{
     public Graph graph;
     private int pop_size;
     private int nfe;
+    private int run_num;
     private double crossover_prob;
     private double mutation_prob;
     private int num_objectives;
@@ -221,7 +225,7 @@ public class AdgMoea implements Runnable{
         CompletionService<Algorithm> ecs = new ExecutorCompletionService<>(pool);
 
         // --> 2. Submit moea run
-        ecs.submit(new AdgSearch(this.moea, this.pop_size, this.nfe));
+        ecs.submit(new AdgSearch(this.moea, this.pop_size, this.nfe, this.run_num));
 
         // --> 3. Join moea
         try {

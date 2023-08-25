@@ -19,24 +19,26 @@ public class AdgSearch  implements Callable<Algorithm> {
     public boolean is_stopped;
     public int pop_size;
     public int nfe;
+    public int run_num;
 
 
     // --> Algorithm Analysis
     private Analyzer analyzer;
     private Accumulator accumulator;
 
-    public AdgSearch(Algorithm alg, int pop_size, int nfe){
+    public AdgSearch(Algorithm alg, int pop_size, int nfe, int run_num){
         this.alg = alg;
         this.pop_size = pop_size;
         this.nfe = nfe;
         this.is_stopped = false;
         this.analyzer = new Analyzer()
                 .withProblem(this.alg.getProblem())
-                .withIdealPoint(-1.1, 0.0)
-                .withReferencePoint(0, 20000)
+                .withIdealPoint(-10.1, -0.1)
+                .withReferencePoint(0, 100)
                 .includeHypervolume()
                 .includeAdditiveEpsilonIndicator();
         this.accumulator = new Accumulator();
+        this.run_num = run_num;
     }
 
 
@@ -50,17 +52,19 @@ public class AdgSearch  implements Callable<Algorithm> {
         this.updateAnalysis();
 
         // Population current_pop = new Population(((AbstractEvolutionaryAlgorithm)alg).getArchive());
+        int step_count = 0;
         Population current_pop = new Population(((AbstractEvolutionaryAlgorithm)this.alg).getPopulation());
         while (!alg.isTerminated() && (alg.getNumberOfEvaluations() < this.nfe) && !this.is_stopped){
-
+            System.out.println("--> ALGORITHM STEP/NFE: " + Integer.toString(step_count) + " | " + Integer.toString(alg.getNumberOfEvaluations()));
+            step_count = step_count + 1;
             // --> Step algorithm
             alg.step();
 
             // --> Get new population / update
             Population new_pop = ((AbstractEvolutionaryAlgorithm)alg).getPopulation();
-            if(this.new_design_check(current_pop, new_pop)){
-                System.out.println("--> NEW DESIGN FOUND");
-            }
+//            if(this.new_design_check(current_pop, new_pop)){
+//                System.out.println("--> NEW DESIGN FOUND");
+//            }
             current_pop = new Population(new_pop);
 
             // --> Record metrics
@@ -69,7 +73,7 @@ public class AdgSearch  implements Callable<Algorithm> {
 
         // --> Record run
         Population final_pop = ((AbstractEvolutionaryAlgorithm) alg).getPopulation();
-        Runs.writeRun(this.analyzer, this.accumulator, final_pop, this.nfe);
+        Runs.writeRun(this.analyzer, this.accumulator, final_pop, this.run_num);
 
         return this.alg;
     }

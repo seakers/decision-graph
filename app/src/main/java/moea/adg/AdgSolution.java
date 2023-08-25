@@ -76,7 +76,7 @@ public class AdgSolution extends Solution {
 
 
 
-    // --> INDIVIDUAL DESIGN DECISIONS
+    // --> INDIVIDUAL DESIGN DECISIONS: SCAN
 
     public NumArray getPayloadAssignment(){
         Gson gson = new Gson();
@@ -253,8 +253,6 @@ public class AdgSolution extends Solution {
         return sf_values;
     }
 
-
-
     public String getFracStrategy(){
         Gson gson = new Gson();
         JsonObject assignment_decision = this.getDesignDecision("Frac Strategy");
@@ -263,6 +261,8 @@ public class AdgSolution extends Solution {
         String strategy = gs_obj.getAsJsonArray("ref").get(0).getAsJsonObject().get("name").getAsString();
         return strategy;
     }
+
+
 
 
     public JsonArray getDesignBits(){
